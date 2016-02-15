@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": true,
+        "outDir": "build/js",
+        "rootDir": ".",
+        "sourceMap": true,
+        "noEmitOnError": true
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        "dist",
+        "browser",
+        ".vscode",
+        ".idea",
+        ".c9"
+    ],
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./test/**/*.ts",
+        "./typings/**/*.ts"
+    ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "maquette-query",
+  "version": "1.0.0",
+  "description": "Query utility for maquette's virtual DOM",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johan-gorter/maquette-query.git"
+  },
+  "keywords": [
+    "maquette",
+    "virtual",
+    "dom"
+  ],
+  "author": "johan@johangorter.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johan-gorter/maquette-query/issues"
+  },
+  "homepage": "https://github.com/johan-gorter/maquette-query#readme",
+  "peerDependencies": {
+    "maquette": "^2.2.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "gulp": "3.9.1",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-typescript": "2.11.0",
+    "mocha": "2.4.5",
+    "tslint": "3.3.0",
+    "typescript": "1.7.5",
+    "vinyl-buffer": "1.0.0",
+    "vinyl-source-stream": "1.1.0"
+  }
+}
