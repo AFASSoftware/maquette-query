@@ -5,23 +5,6 @@ export interface MouseEventParameters {
   pageY?: number;
 }
 
-/**
- * A small facade that allows firing of simple events for common usecases.
- *
- * If you need to have more control of the properties on the event, you can always invoke the VQuery.properties.on???() yourself.
- */
-export interface Simulator {
-  keyDown: (keyCode: number, targetElement?: any) => KeyboardEvent;
-  keyUp: (keyCode: number, targetElement?: any) => KeyboardEvent;
-  mouseDown: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
-  mouseUp: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
-  input: (targetElement: any) => Event;
-  change: (targetElement: any) => Event;
-  focus: (targetElement?: any) => Event;
-  blur: (targetElement?: any) => Event;
-  keyPress: (keyCode: number, valueBefore: string, valueAfter: string, targetElement?: any) => void;
-}
-
 export interface MaquetteQuery {
   findAll: (selector: string) => MaquetteQuery[];
   find: (selector: string) => MaquetteQuery;
@@ -115,7 +98,7 @@ let createFocusEvent = (target: any): FocusEvent => {
   return <any>createEvent(target);
 };
 
-let createSimulator = (vnode: VNode): Simulator => {
+let createSimulator = (vnode: VNode) => {
   let properties = vnode.properties;
   return {
 
@@ -185,6 +168,9 @@ let createSimulator = (vnode: VNode): Simulator => {
   };
 };
 
+let simulatorInstance = undefined && createSimulator(undefined);
+export type Simulator = typeof simulatorInstance;
+
 query = (vnodeTree: VNode): MaquetteQuery => {
   let children = <MaquetteQuery[]>[];
   return {
@@ -200,6 +186,11 @@ query = (vnodeTree: VNode): MaquetteQuery => {
     vnodeSelector: vnodeTree.vnodeSelector,
     properties: vnodeTree.properties,
     get children() { return children || (children = vnodeTree.children.map(query)); }, // lazyness is by design
-    get simulate() { return createSimulator(vnodeTree); }
+    /**
+     * A small facade that allows firing of simple events and sequences of events for common usecases.
+     * It is not meant to be exhaustive.
+     * If you need to simulate something that is not in here, you can simply invoke the query(...).properties.on???() yourself.
+     */
+    get simulate(): Simulator { return createSimulator(vnodeTree); }
   };
 };
