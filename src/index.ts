@@ -5,6 +5,18 @@ export interface MouseEventParameters {
   pageY?: number;
 }
 
+export interface Simulator {
+  keyDown: (keyCode: number, targetElement?: any) => KeyboardEvent;
+  keyUp: (keyCode: number, targetElement?: any) => KeyboardEvent;
+  mouseDown: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseUp: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  input: (targetElement: any) => Event;
+  change: (targetElement: any) => Event;
+  focus: (targetElement?: any) => Event;
+  blur: (targetElement?: any) => Event;
+  keyPress: (keyCode: number, valueBefore: string, valueAfter: string, targetElement?: any) => void;
+}
+
 export interface MaquetteQuery {
   findAll: (selector: string) => MaquetteQuery[];
   find: (selector: string) => MaquetteQuery;
@@ -98,7 +110,7 @@ let createFocusEvent = (target: any): FocusEvent => {
   return <any>createEvent(target);
 };
 
-let createSimulator = (vnode: VNode) => {
+let createSimulator = (vnode: VNode): Simulator => {
   let properties = vnode.properties;
   return {
 
@@ -168,11 +180,8 @@ let createSimulator = (vnode: VNode) => {
   };
 };
 
-let simulatorInstance = undefined && createSimulator(undefined);
-export type Simulator = typeof simulatorInstance;
-
 query = (vnodeTree: VNode): MaquetteQuery => {
-  let children = <MaquetteQuery[]>[];
+  let children = undefined as MaquetteQuery[];
   return {
     findAll: (selector: string) => {
       return findAll(makeSelectorFunction(selector), vnodeTree, []);

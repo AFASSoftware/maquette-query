@@ -25,11 +25,17 @@
     "maquette": "^2.2.0"
   },
   "devDependencies": {
+    "browser-sync": "2.11.1",
     "chai": "3.5.0",
+    "del": "2.2.0",
     "gulp": "3.9.1",
+    "gulp-istanbul": "0.10.3",
+    "gulp-mocha": "2.2.0",
+    "gulp-plumber": "1.1.0",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "2.11.0",
     "mocha": "2.4.5",
+    "remap-istanbul": "0.5.1",
     "sinon": "1.17.3",
     "sinon-chai": "2.8.0",
     "tslint": "3.3.0",

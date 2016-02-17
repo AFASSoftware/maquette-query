@@ -17,4 +17,11 @@ describe('descendants', () => {
     expect(results[1].vnodeSelector).to.equal('div.here.too');
     expect(results[2].vnodeSelector).to.equal('div.and.here.too');
   });
+
+  it('returns children as an array of MaquetteQuery objects', () => {
+    let vnode = h('div', [h('span', ['text'])]);
+    let children = query(vnode).children;
+    expect(children).to.have.length(1);
+    expect(children[0]).to.respondTo('findAll');
+  });
 });
