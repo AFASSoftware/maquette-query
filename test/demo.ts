@@ -4,14 +4,13 @@ import {query} from '../src/index';
 
 describe('demo', () => {
 
+  // The hello world demonstration
   let name = ''; // Piece of data
 
-  // Plain event handler
   let handleNameInput = (evt: Event) => {
     name = (evt.target as HTMLInputElement).value;
   };
 
-  // This function uses the 'hyperscript' notation to create the virtual DOM.
   let renderMaquette = () => {
     return h('div', [
       h('input', {
@@ -21,6 +20,8 @@ describe('demo', () => {
       h('p.output', ['Hello ' + (name || 'you') + '!'])
     ]);
   };
+
+  // The test suite
 
   beforeEach(() => {
     name = '';
