@@ -4,7 +4,8 @@
   "description": "Query utility for maquette's virtual DOM",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "./node_modules/.bin/tsc",
+    "test": "./node_modules/.bin/gulp"
   },
   "repository": {
     "type": "git",
@@ -21,9 +22,6 @@
     "url": "https://github.com/johan-gorter/maquette-query/issues"
   },
   "homepage": "https://github.com/johan-gorter/maquette-query#readme",
-  "peerDependencies": {
-    "maquette": "^2.2.0"
-  },
   "devDependencies": {
     "browser-sync": "2.11.1",
     "chai": "3.5.0",
@@ -34,6 +32,7 @@
     "gulp-plumber": "1.1.0",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "2.11.0",
+    "maquette": "^2.2.0",
     "mocha": "2.4.5",
     "remap-istanbul": "0.5.1",
     "sinon": "1.17.3",

@@ -18,7 +18,7 @@ export interface Simulator {
   keyPress: (keyCodeOrChar: number|string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
 }
 
-type VNodePredicate = (vnode: VNode) => boolean;
+export type VNodePredicate = (vnode: VNode) => boolean;
 
 export interface MaquetteQuery {
   findAll: (selector: string|VNodePredicate) => MaquetteQuery[];
