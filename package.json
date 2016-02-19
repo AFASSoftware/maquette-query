@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johan-gorter/maquette-query.git"
+    "url": "https://github.com/AFASSoftware/maquette-query"
   },
   "keywords": [
     "maquette",
@@ -19,9 +19,9 @@
   "author": "johan@johangorter.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/johan-gorter/maquette-query/issues"
+    "url": "https://github.com/AFASSoftware/maquette-query/issues"
   },
-  "homepage": "https://github.com/johan-gorter/maquette-query#readme",
+  "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
     "browser-sync": "2.11.1",
     "chai": "3.5.0",
