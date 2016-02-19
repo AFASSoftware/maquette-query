@@ -5,7 +5,7 @@ First of all, querying a virtual DOM makes no sense in production code.
 There is however one area that benefits from querying: unit tests.
 Maquette-query makes unit testing both easy and expressive.
 
-Consider the following code same to test the 'hello you' demonstration from [maquettejs.org](http://maquettejs.org).
+Consider the following code to test the 'hello you' demonstration from [maquettejs.org](http://maquettejs.org).
 
 ```
 let input = query(renderMaquette()).find('input');
