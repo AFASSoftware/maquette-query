@@ -29,13 +29,13 @@ describe('demo', () => {
 
   it('displays "hello you!" when no name has been entered', () => {
     let output = query(renderMaquette()).find('.output');
-    expect(output.text()).to.equal('Hello you!');
+    expect(output.textContent).to.equal('Hello you!');
   });
 
   it('greets the user by the name he has entered', () => {
     let input = query(renderMaquette()).find('input');
     input.simulate.input({ value: 'Johan' });
     let output = query(renderMaquette()).find('.output');
-    expect(output.text()).to.equal('Hello Johan!');
+    expect(output.textContent).to.equal('Hello Johan!');
   });
 });

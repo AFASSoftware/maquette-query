@@ -10,24 +10,25 @@ export interface Simulator {
   keyUp: (keyCode: number, targetElement?: any) => KeyboardEvent;
   mouseDown: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
   mouseUp: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  click: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
   input: (targetElement: any) => Event;
   change: (targetElement: any) => Event;
   focus: (targetElement?: any) => Event;
   blur: (targetElement?: any) => Event;
-  keyPress: (keyCode: number, valueBefore: string, valueAfter: string, targetElement?: any) => void;
+  keyPress: (keyCodeOrChar: number|string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
 }
 
+type VNodePredicate = (vnode: VNode) => boolean;
+
 export interface MaquetteQuery {
-  findAll: (selector: string) => MaquetteQuery[];
-  find: (selector: string) => MaquetteQuery;
-  text: () => string;
+  findAll: (selector: string|VNodePredicate) => MaquetteQuery[];
+  find: (selector: string|VNodePredicate) => MaquetteQuery;
+  textContent: string;
   vnodeSelector: string;
   properties: VNodeProperties;
   children: MaquetteQuery[];
   simulate: Simulator;
 }
-
-type VNodePredicate = (vnode: VNode) => boolean;
 
 let makeSelectorFunction = (selector: string): VNodePredicate => {
   if (typeof selector === 'function') {
@@ -49,18 +50,18 @@ let makeSelectorFunction = (selector: string): VNodePredicate => {
 export let query: (vnodeTree: VNode) => MaquetteQuery;
 
 let findAll = (selector: VNodePredicate, vnodeTree: VNode, results: MaquetteQuery[]): MaquetteQuery[] => {
-  if (selector(vnodeTree)) {
-    results.push(query(vnodeTree));
-  }
   if (vnodeTree.children) {
     vnodeTree.children.forEach((child: VNode) => {
+      if (selector(child)) {
+        results.push(query(child));
+      }
       findAll(selector, child, results);
     });
   }
   return results;
 };
 
-let text = (vnodeTree: VNode, results: string[]): string[] => {
+let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
   if (vnodeTree.vnodeSelector === '') {
     results.push((<any>vnodeTree).text);
   } else {
@@ -69,7 +70,7 @@ let text = (vnodeTree: VNode, results: string[]): string[] => {
     }
     if (vnodeTree.children) {
       vnodeTree.children.forEach((child: any): any => {
-        text(child, results);
+        collectTextContent(child, results);
       });
     }
   }
@@ -138,6 +139,12 @@ let createSimulator = (vnode: VNode): Simulator => {
       return event;
     },
 
+    click: (targetElement: any, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(targetElement, parameters);
+      properties.onclick(event);
+      return event;
+    },
+
     input: (targetElement: any) => {
       let event = createEvent(targetElement);
       properties.oninput(event);
@@ -162,7 +169,8 @@ let createSimulator = (vnode: VNode): Simulator => {
       return event;
     },
 
-    keyPress: (keyCode: number, valueBefore: string, valueAfter: string, targetElement?: any) => {
+    keyPress: (keyCodeOrChar: number|string, valueBefore: string, valueAfter: string, targetElement?: any) => {
+      let keyCode = typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
       targetElement = targetElement || {};
       targetElement.value = valueBefore;
       if (properties.onkeydown) {
@@ -189,8 +197,8 @@ query = (vnodeTree: VNode): MaquetteQuery => {
     find: (selector: string) => {
       return findAll(makeSelectorFunction(selector), vnodeTree, [])[0];
     },
-    text: () => {
-      return text(vnodeTree, []).join('');
+    get textContent(): string {
+      return collectTextContent(vnodeTree, []).join('');
     },
     vnodeSelector: vnodeTree.vnodeSelector,
     properties: vnodeTree.properties,
