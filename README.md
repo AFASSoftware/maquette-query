@@ -8,14 +8,15 @@ Maquette-query makes unit testing both easy and expressive.
 Consider the following code to test the 'hello you' demonstration from [maquettejs.org](http://maquettejs.org).
 
 ```
-let input = query(renderMaquette()).find('input');
-input.simulate.input({ value: 'John' });
+let projector = createTestProjector(renderMaquette);
+let input = projector.query('input');
+let output = projector.query('.output');
 
-let output = query(renderMaquette()).find('.output');
+input.simulate.input({ value: 'John' });
 expect(output.textContent).to.equal('Hello John!');
 ```
 
-Maquette-query provides a small subset of the familliar JQuery and the `querySelector` API to query the virtual DOM.
-It also provides a `simulate` object to facilitate firing of common events.
+Maquette-query provides a `querySelector`-like API to query the virtual DOM.
+It also provides a `simulate` interface to facilitate firing of common events.
 
 If you find anything missing, do not hesitate to issue a pull request.
