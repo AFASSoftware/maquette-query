@@ -1,5 +1,30 @@
 import {VNode, VNodeProperties} from 'maquette';
 
+// Interfaces
+// ----------
+
+export interface Query {
+  execute(): VNode;
+  exists(): boolean;
+  query: (selector: string | VNodePredicate, fakeDomNode?: Object) => Query;
+  queryAll: (selector: string | VNodePredicate) => CollectionQuery;
+  textContent: string;
+  vnodeSelector: string;
+  properties: VNodeProperties;
+  getChild(index: number): Query;
+  children: VNode[];
+  simulate: Simulator;
+}
+
+export interface CollectionQuery {
+  execute(): VNode[];
+  getResult(index: number): Query;
+}
+
+export interface TestProjector extends Query {
+  initialize: (renderMaquette: () => VNode) => void;
+}
+
 export interface MouseEventParameters {
   pageX?: number;
   pageY?: number;
@@ -15,25 +40,15 @@ export interface Simulator {
   change: (targetElement: any) => Event;
   focus: (targetElement?: any) => Event;
   blur: (targetElement?: any) => Event;
-  keyPress: (keyCodeOrChar: number|string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
+  keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
 }
 
 export type VNodePredicate = (vnode: VNode) => boolean;
 
-export interface MaquetteQuery {
-  findAll: (selector: string|VNodePredicate) => MaquetteQuery[];
-  find: (selector: string|VNodePredicate) => MaquetteQuery;
-  textContent: string;
-  vnodeSelector: string;
-  properties: VNodeProperties;
-  children: MaquetteQuery[];
-  simulate: Simulator;
-}
+// Helper functions
+// ----------------
 
-let makeSelectorFunction = (selector: string): VNodePredicate => {
-  if (typeof selector === 'function') {
-    return <any>selector;
-  }
+let makeSelectorFunction = (selector: string | VNodePredicate): VNodePredicate => {
   if (typeof selector === 'string') {
     return (vNode: VNode) => {
       let index = vNode.vnodeSelector.indexOf(selector);
@@ -43,23 +58,30 @@ let makeSelectorFunction = (selector: string): VNodePredicate => {
       }
       return false;
     };
+  } else if (typeof selector === 'function') {
+    return selector;
+  } else {
+    throw new Error('Invalid selector ' + selector);
   }
-  throw new Error('Invalid selector ' + selector);
 };
 
-export let query: (vnodeTree: VNode) => MaquetteQuery;
-
-let findAll = (selector: VNodePredicate, vnodeTree: VNode, results: MaquetteQuery[]): MaquetteQuery[] => {
-  if (vnodeTree.children) {
-    vnodeTree.children.forEach((child: VNode) => {
-      if (selector(child)) {
-        results.push(query(child));
-      }
-      findAll(selector, child, results);
-    });
-  }
+let filterDescendants = (root: VNode, predicate: VNodePredicate): VNode[] => {
+  let results: VNode[] = [];
+  let visit = (vnodeTree: VNode) => {
+    if (vnodeTree.children) {
+      vnodeTree.children.forEach((child: VNode) => {
+        if (predicate(child)) {
+          results.push(child);
+        }
+        visit(child);
+      });
+    }
+  };
+  visit(root);
   return results;
 };
+
+// Simulator
 
 let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
   if (vnodeTree.vnodeSelector === '') {
@@ -111,103 +133,161 @@ let createFocusEvent = (target: any): FocusEvent => {
   return <any>createEvent(target);
 };
 
-let createSimulator = (vnode: VNode): Simulator => {
+let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => {
   let properties = vnode.properties;
   return {
 
-    keyDown: (keyCode: number, targetElement: any) => {
-      let event = createKeyEvent(keyCode, targetElement);
+    keyDown: (keyCode: number, fakeDomNode?: Object) => {
+      let event = createKeyEvent(keyCode, fakeDomNode || defaultFakeDomNode);
       properties.onkeydown(event);
       return event;
     },
 
-    keyUp: (keyCode: number, targetElement: any) => {
-      let event = createKeyEvent(keyCode, targetElement);
+    keyUp: (keyCode: number, fakeDomNode?: Object) => {
+      let event = createKeyEvent(keyCode, fakeDomNode || defaultFakeDomNode);
       properties.onkeyup(event);
       return event;
     },
 
-    mouseDown: (targetElement: any, parameters?: MouseEventParameters) => {
-      let event = createMouseEvent(targetElement, parameters);
+    mouseDown: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmousedown(event);
       return event;
     },
 
-    mouseUp: (targetElement: any, parameters?: MouseEventParameters) => {
-      let event = createMouseEvent(targetElement, parameters);
+    mouseUp: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmouseup(event);
       return event;
     },
 
-    click: (targetElement: any, parameters?: MouseEventParameters) => {
-      let event = createMouseEvent(targetElement, parameters);
+    click: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onclick(event);
       return event;
     },
 
-    input: (targetElement: any) => {
-      let event = createEvent(targetElement);
+    input: (fakeDomNode?: Object) => {
+      let event = createEvent(fakeDomNode || defaultFakeDomNode);
       properties.oninput(event);
       return event;
     },
 
-    change: (targetElement: any) => {
-      let event = createEvent(targetElement);
+    change: (fakeDomNode?: Object) => {
+      let event = createEvent(fakeDomNode || defaultFakeDomNode);
       properties.onchange(event);
       return event;
     },
 
-    focus: (targetElement?: any) => {
-      let event = createFocusEvent(targetElement);
+    focus: (fakeDomNode?: Object) => {
+      let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
       properties.onfocus(event);
       return event;
     },
 
-    blur: (targetElement?: any) => {
-      let event = createFocusEvent(targetElement);
+    blur: (fakeDomNode?: Object) => {
+      let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
       properties.onblur(event);
       return event;
     },
 
-    keyPress: (keyCodeOrChar: number|string, valueBefore: string, valueAfter: string, targetElement?: any) => {
+    keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, fakeDomNode?: Object) => {
+      let target = (fakeDomNode || defaultFakeDomNode || {}) as { value: string };
       let keyCode = typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
-      targetElement = targetElement || {};
-      targetElement.value = valueBefore;
+      target.value = valueBefore;
       if (properties.onkeydown) {
-        properties.onkeydown(createKeyEvent(keyCode, targetElement));
+        properties.onkeydown(createKeyEvent(keyCode, target));
       }
-      targetElement.value = valueAfter;
+      target.value = valueAfter;
       if (properties.onkeyup) {
-        properties.onkeyup(createKeyEvent(keyCode, targetElement));
+        properties.onkeyup(createKeyEvent(keyCode, target));
       }
       if (properties.oninput) {
-        properties.oninput(createEvent(targetElement));
+        properties.oninput(createEvent(target));
       }
     }
 
   };
 };
 
-query = (vnodeTree: VNode): MaquetteQuery => {
-  let children = undefined as MaquetteQuery[];
+// The create methods
+
+let createCollectionQuery: (getVNodes: () => VNode[]) => CollectionQuery;
+
+let createQuery = (getVNode: () => VNode): Query => {
+  let query = (selector: string | VNodePredicate, fakeDomNode?: Object) => {
+    let predicate = makeSelectorFunction(selector);
+    return createQuery(() => filterDescendants(getVNode(), predicate)[0]);
+  };
+  let queryAll = (selector: string | VNodePredicate) => {
+    let predicate = makeSelectorFunction(selector);
+    return createCollectionQuery(() => filterDescendants(getVNode(), predicate));
+  };
+  let getResult = () => {
+    let result = getVNode();
+    if (!result) {
+      throw new Error('Query did not match a VNode');
+    }
+    return result;
+  };
   return {
-    findAll: (selector: string) => {
-      return findAll(makeSelectorFunction(selector), vnodeTree, []);
-    },
-    find: (selector: string) => {
-      return findAll(makeSelectorFunction(selector), vnodeTree, [])[0];
-    },
+    execute: getVNode,
+    exists: () => !!getVNode(),
+    query,
+    queryAll,
     get textContent(): string {
-      return collectTextContent(vnodeTree, []).join('');
+      return collectTextContent(getResult(), []).join('');
     },
-    vnodeSelector: vnodeTree.vnodeSelector,
-    properties: vnodeTree.properties,
-    get children() { return children || (children = vnodeTree.children.map(query)); }, // lazyness is by design
+    get vnodeSelector(): string {
+      return getResult().vnodeSelector;
+    },
+    get properties(): VNodeProperties {
+      return getResult().properties;
+    },
+    get children(): VNode[] {
+      return getResult().children;
+    },
+    getChild: (index: number) => {
+      return createQuery(() => {
+        return getResult().children[index];
+      });
+    },
     /**
      * A small facade that allows firing of simple events and sequences of events for common usecases.
      * It is not meant to be exhaustive.
-     * If you need to simulate something that is not in here, you can simply invoke the query(...).properties.on???() yourself.
+     * If you need to simulate something that is not in here, you can simply invoke query(...).properties.on???() yourself.
      */
-    get simulate(): Simulator { return createSimulator(vnodeTree); }
+    get simulate(): Simulator { return createSimulator(getResult()); }
   };
+};
+
+createCollectionQuery = (getVNodes: () => VNode[]): CollectionQuery => {
+  return {
+    execute: getVNodes,
+    getResult: (index) => {
+      return createQuery(() => {
+        return getVNodes()[index];
+      });
+    }
+  };
+};
+
+/**
+ * Creates a test projector which implements the Query interface
+ * @param renderMaquetteFunction The renderMaquette function that is used to produce the VNode tree.
+ * Optional, when not specified, you must use the initialize function to supply the renderMaquetteFunction.
+ */
+export let createTestProjector = (renderMaquetteFunction?: () => VNode): TestProjector => {
+  let createVNode = () => {
+    if (!renderMaquetteFunction) {
+      throw new Error('TestProjector was not initialized');
+    }
+    return renderMaquetteFunction();
+  };
+  let initialize = (initializeRenderMaquetteFunction: () => VNode) => {
+    renderMaquetteFunction = initializeRenderMaquetteFunction;
+  };
+  let result = createQuery(createVNode) as TestProjector;
+  result.initialize = initialize;
+  return result;
 };

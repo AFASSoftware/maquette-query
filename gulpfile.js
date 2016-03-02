@@ -86,7 +86,7 @@ gulp.task('clean', function(cb) {
   del(['dist', 'build'], cb);
 });
 
-gulp.task('default', ['coverage', 'dist', 'declaration']);
+gulp.task('default', ['test', /* 'coverage', */ 'dist', 'declaration']);
 
 gulp.task('reload', reload);
 

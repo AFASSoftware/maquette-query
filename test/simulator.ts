@@ -1,8 +1,12 @@
 import {expect, sinon} from './test-utilities';
-import {h} from 'maquette';
-import {query} from '../src/index';
+import {h, VNode} from 'maquette';
+import {createTestProjector} from '../src/index';
 
 describe('simulator', () => {
+
+  let query = (vnode: VNode) => {
+    return createTestProjector(() => vnode);
+  };
 
   it('can simulate input', () => {
     let handleInput = sinon.stub();
@@ -40,7 +44,7 @@ describe('simulator', () => {
     let handleKeyDown = sinon.stub();
     let vnode = h('input', { type: 'text', onkeydown: handleKeyDown });
     query(vnode).simulate.keyDown(13, element);
-    expect(handleKeyDown).to.be.calledWith(sinon.match({which: 13, target: element }));
+    expect(handleKeyDown).to.be.calledWith(sinon.match({ which: 13, target: element }));
   });
 
   it('can simulate keyUp', () => {
@@ -48,15 +52,15 @@ describe('simulator', () => {
     let handleKeyUp = sinon.stub();
     let vnode = h('input', { type: 'text', onkeyup: handleKeyUp });
     query(vnode).simulate.keyUp(13, element);
-    expect(handleKeyUp).to.be.calledWith(sinon.match({which: 13, target: element }));
+    expect(handleKeyUp).to.be.calledWith(sinon.match({ which: 13, target: element }));
   });
 
   it('can simulate mouseDown', () => {
     let element = {};
     let handleMouseDown = sinon.stub();
     let vnode = h('input', { type: 'text', onmousedown: handleMouseDown });
-    query(vnode).simulate.mouseDown(element, {pageX: 100, pageY: 200});
-    expect(handleMouseDown).to.be.calledWith(sinon.match({target: element, pageX: 100, pageY: 200 }));
+    query(vnode).simulate.mouseDown(element, { pageX: 100, pageY: 200 });
+    expect(handleMouseDown).to.be.calledWith(sinon.match({ target: element, pageX: 100, pageY: 200 }));
   });
 
   it('can simulate mouseUp', () => {
@@ -64,7 +68,7 @@ describe('simulator', () => {
     let handleMouseUp = sinon.stub();
     let vnode = h('input', { type: 'text', onmouseup: handleMouseUp });
     query(vnode).simulate.mouseUp(element);
-    expect(handleMouseUp).to.be.calledWith(sinon.match({target: element }));
+    expect(handleMouseUp).to.be.calledWith(sinon.match({ target: element }));
   });
 
   it('can simulate click', () => {
@@ -72,18 +76,18 @@ describe('simulator', () => {
     let handleClick = sinon.stub();
     let vnode = h('input', { type: 'text', onclick: handleClick });
     query(vnode).simulate.click(element);
-    expect(handleClick).to.be.calledWith(sinon.match({target: element }));
+    expect(handleClick).to.be.calledWith(sinon.match({ target: element }));
   });
 
   it('can simulate keypress firing keyDown and keyUp', () => {
     let element = {};
     let handleKeyDown = sinon.spy((evt: KeyboardEvent) => {
       expect(evt.which).to.equal(97);
-      expect(evt.target).to.deep.include({value: ''});
+      expect(evt.target).to.deep.include({ value: '' });
     });
     let handleKeyUp = sinon.spy((evt: KeyboardEvent) => {
       expect(evt.which).to.equal(97);
-      expect(evt.target).to.deep.include({value: 'a'});
+      expect(evt.target).to.deep.include({ value: 'a' });
     });
     let vnode = h('input', { type: 'text', onkeydown: handleKeyDown, onkeyup: handleKeyUp });
     query(vnode).simulate.keyPress('a', '', 'a', element);
@@ -95,7 +99,7 @@ describe('simulator', () => {
     let handleInput = sinon.stub();
     let vnode = h('input', { type: 'text', oninput: handleInput });
     query(vnode).simulate.keyPress(97, '', 'a');
-    expect(handleInput).to.be.calledWith(sinon.match({target: {value: 'a'}}));
+    expect(handleInput).to.be.calledWith(sinon.match({ target: { value: 'a' } }));
   });
 
   it('creates events which can be instructed to preventDefault', () => {
