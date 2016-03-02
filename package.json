@@ -2,7 +2,8 @@
   "name": "maquette-query",
   "version": "0.5.0",
   "description": "Query utility for maquette's virtual DOM",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "typings": "./dist/maquette.d.ts",
   "scripts": {
     "prepublish": "./node_modules/.bin/tsc",
     "test": "./node_modules/.bin/gulp"
