@@ -27,13 +27,16 @@ describe('hello world app', () => {
 
   let helloWorldApp: Component;
   let projector = createTestProjector();
+  let inputElement: HTMLInputElement; // not really useful in this particular application, but added just for demonstration purposes.
 
-  let input = projector.query('input', { value: '' });
+  let input = projector.query('input');
   let output = projector.query('.output');
 
   beforeEach(() => {
     helloWorldApp = createHelloWorldApp();
     projector.initialize(helloWorldApp.renderMaquette);
+    inputElement = {value: ''} as any;
+    input.setTargetDomNode(inputElement);
   });
 
   it('outputs "hello you!" when no name has been entered', () => {
@@ -45,6 +48,7 @@ describe('hello world app', () => {
     expect(output.textContent).to.equal('Hello J!');
     input.simulate.keyPress('O', 'J', 'Jo');
     expect(output.textContent).to.equal('Hello Jo!');
+    expect(inputElement.value).to.equal('Jo');
   });
 
   it('greets the user by the name he has entered in one input event (using drag and drop for example)', () => {

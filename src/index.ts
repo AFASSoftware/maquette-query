@@ -3,17 +3,58 @@ import {VNode, VNodeProperties} from 'maquette';
 // Interfaces
 // ----------
 
+/**
+ * A Query defines a way to find a specific VNode.
+ *
+ * A query is re-executed each time one of its methods is called. It does NOT cache the result.
+ */
 export interface Query {
+  /**
+   * Executes the query and returns the result.
+   *
+   * Returns `undefined` if a result is not found.
+   */
   execute(): VNode;
+  /**
+   * Executes the query and returns true of a result is found, false otherwise.
+   */
   exists(): boolean;
-  query: (selector: string | VNodePredicate, fakeDomNode?: Object) => Query;
+  /**
+   * Creates a new query starting at the result of this query.
+   */
+  query: (selector: string | VNodePredicate) => Query;
+  /**
+   * Creates a new query which matches multiple nodes, starting at the result of this query.
+   */
   queryAll: (selector: string | VNodePredicate) => CollectionQuery;
+  /**
+   * Executes the query and returns the textContent of this node and all of its descendants in the same way as HTMLElement.textContent does.
+   */
   textContent: string;
+  /**
+   * Executes the query and returns the selector of the resulting VNode.
+   */
   vnodeSelector: string;
+  /**
+   * Executes the query and returns the properties of the resulting VNode.
+   */
   properties: VNodeProperties;
+  /**
+   * Returns a query new which returns the child at the specified index of the result of this query.
+   */
   getChild(index: number): Query;
+  /**
+   * Executes the query and returns the children of the resulting VNode.
+   */
   children: VNode[];
+  /**
+   * Returns a Simulator interface for executing common user-interactions.
+   */
   simulate: Simulator;
+  /**
+   * Registers an object to act as the target DOM node of events that are fired using `simulate`.
+   */
+  setTargetDomNode(fakeDomNode?: Object): void;
 }
 
 export interface CollectionQuery {
@@ -230,6 +271,7 @@ let createQuery = (getVNode: () => VNode): Query => {
     }
     return result;
   };
+  let targetDomNode: Object;
   return {
     execute: getVNode,
     exists: () => !!getVNode(),
@@ -257,7 +299,10 @@ let createQuery = (getVNode: () => VNode): Query => {
      * It is not meant to be exhaustive.
      * If you need to simulate something that is not in here, you can simply invoke query(...).properties.on???() yourself.
      */
-    get simulate(): Simulator { return createSimulator(getResult()); }
+    get simulate(): Simulator { return createSimulator(getResult(), targetDomNode); },
+    setTargetDomNode: (target) => {
+      targetDomNode = target;
+    }
   };
 };
 
