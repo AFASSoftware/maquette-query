@@ -10,45 +10,51 @@ import {VNode, VNodeProperties} from 'maquette';
  */
 export interface Query {
   /**
-   * Executes the query and returns the result.
+   * Executes the Query and returns the resulting VNode.
    *
-   * Returns `undefined` if a result is not found.
+   * Throws an Error if a result is not found.
    */
   execute(): VNode;
   /**
-   * Executes the query and returns true of a result is found, false otherwise.
+   * Executes the query and returns true if a result is found, false otherwise.
    */
   exists(): boolean;
   /**
-   * Creates a new query starting at the result of this query.
+   * Creates a new Query starting at the result of this query.
+   * The resulting query returns the first result that matches the specified selector.
+   *
+   * @param selector The test that is executed at each descendant of the result of the query.
+   * Selector is either a function of a string containing one of the following: a tagname, a dot followed by a className, or a hash followed by an id.
    */
   query: (selector: string | VNodePredicate) => Query;
   /**
    * Creates a new query which matches multiple nodes, starting at the result of this query.
+   *
+   * @param selector see `query`.
    */
   queryAll: (selector: string | VNodePredicate) => CollectionQuery;
   /**
-   * Executes the query and returns the textContent of this node and all of its descendants in the same way as HTMLElement.textContent does.
-   */
-  textContent: string;
-  /**
-   * Executes the query and returns the selector of the resulting VNode.
-   */
-  vnodeSelector: string;
-  /**
-   * Executes the query and returns the properties of the resulting VNode.
-   */
-  properties: VNodeProperties;
-  /**
-   * Returns a query new which returns the child at the specified index of the result of this query.
+   * Returns a Query new which returns the child at the specified index of the result of this query.
    */
   getChild(index: number): Query;
   /**
-   * Executes the query and returns the children of the resulting VNode.
+   * Executes the Query and returns the textContent of this node and all of its descendants in the same way as HTMLElement.textContent does.
+   */
+  textContent: string;
+  /**
+   * Executes the Query and returns the selector of the resulting VNode.
+   */
+  vnodeSelector: string;
+  /**
+   * Executes the Query and returns the properties of the resulting VNode.
+   */
+  properties: VNodeProperties;
+  /**
+   * Executes the Query and returns the children of the resulting VNode.
    */
   children: VNode[];
   /**
-   * Returns a Simulator interface for executing common user-interactions.
+   * Returns a Simulator for executing common user-interactions. Will invoke `VNode.properties.on???()` callbacks
    */
   simulate: Simulator;
   /**
@@ -57,11 +63,23 @@ export interface Query {
   setTargetDomNode(fakeDomNode?: Object): void;
 }
 
+/**
+ * CollectionQuery is a query that yields multiple VNodes.
+ */
 export interface CollectionQuery {
+  /**
+   * Executes the query.
+   */
   execute(): VNode[];
+  /**
+   * Creates a new Query that returns the result of this query at the specified index.
+   */
   getResult(index: number): Query;
 }
 
+/**
+ * see `createTestProjector`
+ */
 export interface TestProjector extends Query {
   initialize: (renderMaquette: () => VNode) => void;
 }
@@ -71,16 +89,49 @@ export interface MouseEventParameters {
   pageY?: number;
 }
 
+/**
+ * Returns a Simulator for executing common user-interactions.
+ */
 export interface Simulator {
-  keyDown: (keyCode: number, targetElement?: any) => KeyboardEvent;
-  keyUp: (keyCode: number, targetElement?: any) => KeyboardEvent;
+  /**
+   * Will invoke VNode.properties.onkeydown
+   */
+  keyDown: (keyCode: number | string, targetElement?: any) => KeyboardEvent;
+  /**
+   * Will invoke VNode.properties.onkeyup
+   */
+  keyUp: (keyCode: number | string, targetElement?: any) => KeyboardEvent;
+  /**
+   * Will invoke VNode.properties.onmousedown
+   */
   mouseDown: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  /**
+   * Will invoke VNode.properties.onmouseup
+   */
   mouseUp: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  /**
+   * Will invoke VNode.properties.onclick
+   */
   click: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  /**
+   * Will invoke VNode.properties.oninput
+   */
   input: (targetElement: any) => Event;
+  /**
+   * Will invoke VNode.properties.onchange
+   */
   change: (targetElement: any) => Event;
+  /**
+   * Will invoke VNode.properties.onfocus
+   */
   focus: (targetElement?: any) => Event;
+  /**
+   * Will invoke VNode.properties.onblur
+   */
   blur: (targetElement?: any) => Event;
+  /**
+   * Will invoke VNode.properties.onkeydown, VNode.properties.onkeyup, VNode.properties.onkeypress and VNode.properties.oninput
+   */
   keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
 }
 
@@ -174,18 +225,22 @@ let createFocusEvent = (target: any): FocusEvent => {
   return <any>createEvent(target);
 };
 
+let getKeyCode = (keyCodeOrChar: number | string) => {
+  return typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
+};
+
 let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => {
   let properties = vnode.properties;
   return {
 
-    keyDown: (keyCode: number, fakeDomNode?: Object) => {
-      let event = createKeyEvent(keyCode, fakeDomNode || defaultFakeDomNode);
+    keyDown: (keyCode: number | string, fakeDomNode?: Object) => {
+      let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
       properties.onkeydown(event);
       return event;
     },
 
-    keyUp: (keyCode: number, fakeDomNode?: Object) => {
-      let event = createKeyEvent(keyCode, fakeDomNode || defaultFakeDomNode);
+    keyUp: (keyCode: number | string, fakeDomNode?: Object) => {
+      let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
       properties.onkeyup(event);
       return event;
     },
@@ -273,7 +328,7 @@ let createQuery = (getVNode: () => VNode): Query => {
   };
   let targetDomNode: Object;
   return {
-    execute: getVNode,
+    execute: getResult,
     exists: () => !!getVNode(),
     query,
     queryAll,
