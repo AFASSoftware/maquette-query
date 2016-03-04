@@ -75,6 +75,10 @@ export interface CollectionQuery {
    * Creates a new Query that returns the result of this query at the specified index.
    */
   getResult(index: number): Query;
+  /**
+   * Executes the Query and returns the number of results.
+   */
+  length: number;
 }
 
 /**
@@ -104,23 +108,23 @@ export interface Simulator {
   /**
    * Will invoke VNode.properties.onmousedown
    */
-  mouseDown: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseDown: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
   /**
    * Will invoke VNode.properties.onmouseup
    */
-  mouseUp: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseUp: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
   /**
    * Will invoke VNode.properties.onclick
    */
-  click: (targetElement: any, parameters?: MouseEventParameters) => MouseEvent;
+  click: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
   /**
    * Will invoke VNode.properties.oninput
    */
-  input: (targetElement: any) => Event;
+  input: (targetElement?: any) => Event;
   /**
    * Will invoke VNode.properties.onchange
    */
-  change: (targetElement: any) => Event;
+  change: (targetElement?: any) => Event;
   /**
    * Will invoke VNode.properties.onfocus
    */
@@ -201,7 +205,8 @@ let createEvent = (target: any): Event => {
     stopPropagation: () => {
       result.propagationStopped = true;
     },
-    target
+    target,
+    currentTarget: target
   };
   return <any>result;
 };
@@ -209,6 +214,7 @@ let createEvent = (target: any): Event => {
 let createKeyEvent = (which: number, target: any): KeyboardEvent => {
   let event = <any>createEvent(target);
   event.which = which;
+  event.keyCode = which;
   return event;
 };
 
@@ -368,6 +374,9 @@ createCollectionQuery = (getVNodes: () => VNode[]): CollectionQuery => {
       return createQuery(() => {
         return getVNodes()[index];
       });
+    },
+    get length() {
+      return getVNodes().length;
     }
   };
 };
