@@ -61,6 +61,10 @@ export interface Query {
    * Registers an object to act as the target DOM node of events that are fired using `simulate`.
    */
   setTargetDomNode(fakeDomNode?: Object): void;
+  /**
+   * Gets the object registered using setTargetDomNode, as HTMLElement.
+   */
+  getTargetDomNode(): HTMLElement;
 }
 
 /**
@@ -363,6 +367,9 @@ let createQuery = (getVNode: () => VNode): Query => {
     get simulate(): Simulator { return createSimulator(getResult(), targetDomNode); },
     setTargetDomNode: (target) => {
       targetDomNode = target;
+    },
+    getTargetDomNode: () => {
+      return targetDomNode as any;
     }
   };
 };
