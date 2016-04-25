@@ -301,15 +301,20 @@ let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => 
       let target = (fakeDomNode || defaultFakeDomNode || {}) as { value: string };
       let keyCode = typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
       target.value = valueBefore;
+      let keyDownEvent = createKeyEvent(keyCode, target);
       if (properties.onkeydown) {
-        properties.onkeydown(createKeyEvent(keyCode, target));
+        properties.onkeydown(keyDownEvent);
       }
-      target.value = valueAfter;
+
+      if (!keyDownEvent.defaultPrevented) {
+        target.value = valueAfter;
+        if (properties.oninput) {
+          properties.oninput(createEvent(target));
+        }
+      }
+
       if (properties.onkeyup) {
         properties.onkeyup(createKeyEvent(keyCode, target));
-      }
-      if (properties.oninput) {
-        properties.oninput(createEvent(target));
       }
     }
 

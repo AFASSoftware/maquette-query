@@ -102,6 +102,22 @@ describe('simulator', () => {
     expect(handleInput).to.be.calledWith(sinon.match({ target: { value: 'a' } }));
   });
 
+  it('will not set the value and will not fire the input event when the keyDown event has its default prevented', () => {
+    let element = { value: 'initial' };
+    let handleKeyDown = sinon.spy((event: KeyboardEvent) => {
+      event.preventDefault();
+    });
+    let handleInput = sinon.stub();
+    let handleKeyUp = sinon.stub();
+
+    let vnode = h('input', { type: 'text', onkeydown: handleKeyDown, onkeyup: handleKeyUp, oninput: handleInput });
+    query(vnode).simulate.keyPress('a', 'initial', 'should not be this', element);
+    expect(handleKeyDown).to.have.been.calledOnce;
+    expect(handleInput).to.not.have.been.calledOnce;
+    expect(handleKeyUp).to.have.been.calledOnce;
+    expect(element.value).to.equal('initial');
+  });
+
   it('creates events which can be instructed to preventDefault', () => {
     let handleClick = (evt: MouseEvent) => {
       evt.preventDefault();
@@ -112,5 +128,4 @@ describe('simulator', () => {
     expect(event.defaultPrevented).to.equal(true);
     expect((event as any).propagationStopped).to.equal(true);
   });
-
 });
