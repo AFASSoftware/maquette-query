@@ -1,6 +1,6 @@
 import {expect} from './test-utilities';
 import {h} from 'maquette';
-import {createTestProjector} from '../src/index';
+import {createTestProjector} from '../src/test-projector';
 
 describe('descendants', () => {
   it('can query nodes in the tree of descendants', () => {
@@ -21,8 +21,8 @@ describe('descendants', () => {
   it('returns children as an array of VNode objects and getChild as a Query object', () => {
     let vnode = h('div', [h('span', ['text'])]);
     let projector = createTestProjector(() => vnode);
-    let children = projector.children;
+    let children = projector.root.children;
     expect(children).to.have.length(1);
-    expect(projector.getChild(0)).to.respondTo('queryAll');
+    expect(projector.root.getChild(0)).to.respondTo('queryAll');
   });
 });

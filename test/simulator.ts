@@ -1,17 +1,17 @@
 import {expect, sinon} from './test-utilities';
 import {h, VNode} from 'maquette';
-import {createTestProjector} from '../src/index';
+import {createTestProjector} from '../src/test-projector';
 
 describe('simulator', () => {
 
-  let query = (vnode: VNode) => {
-    return createTestProjector(() => vnode);
+  let createQuery = (vnode: VNode) => {
+    return createTestProjector(() => vnode).root;
   };
 
   it('can simulate input', () => {
     let handleInput = sinon.stub();
     let vnode = h('input', { type: 'text', oninput: handleInput });
-    query(vnode).simulate.input({ value: 'Text1' });
+    createQuery(vnode).simulate.input({ value: 'Text1' });
     expect(handleInput).to.be.calledWith(sinon.match({ target: { value: 'Text1' } }));
   });
 
@@ -19,7 +19,7 @@ describe('simulator', () => {
     let element = {};
     let handleBlur = sinon.stub();
     let vnode = h('input', { type: 'text', onblur: handleBlur });
-    query(vnode).simulate.blur(element);
+    createQuery(vnode).simulate.blur(element);
     expect(handleBlur).to.be.calledWith(sinon.match({ target: element }));
   });
 
@@ -27,7 +27,7 @@ describe('simulator', () => {
     let element = {};
     let handleFocus = sinon.stub();
     let vnode = h('input', { type: 'text', onfocus: handleFocus });
-    query(vnode).simulate.focus(element);
+    createQuery(vnode).simulate.focus(element);
     expect(handleFocus).to.be.calledWith(sinon.match({ target: element }));
   });
 
@@ -35,7 +35,7 @@ describe('simulator', () => {
     let element = {};
     let handleChange = sinon.stub();
     let vnode = h('input', { type: 'text', onchange: handleChange });
-    query(vnode).simulate.change(element);
+    createQuery(vnode).simulate.change(element);
     expect(handleChange).to.be.calledWith(sinon.match({ target: element }));
   });
 
@@ -43,7 +43,7 @@ describe('simulator', () => {
     let element = {};
     let handleKeyDown = sinon.stub();
     let vnode = h('input', { type: 'text', onkeydown: handleKeyDown });
-    query(vnode).simulate.keyDown(13, element);
+    createQuery(vnode).simulate.keyDown(13, element);
     expect(handleKeyDown).to.be.calledWith(sinon.match({ which: 13, target: element }));
   });
 
@@ -51,7 +51,7 @@ describe('simulator', () => {
     let element = {};
     let handleKeyUp = sinon.stub();
     let vnode = h('input', { type: 'text', onkeyup: handleKeyUp });
-    query(vnode).simulate.keyUp(13, element);
+    createQuery(vnode).simulate.keyUp(13, element);
     expect(handleKeyUp).to.be.calledWith(sinon.match({ which: 13, target: element }));
   });
 
@@ -59,7 +59,7 @@ describe('simulator', () => {
     let element = {};
     let handleMouseDown = sinon.stub();
     let vnode = h('input', { type: 'text', onmousedown: handleMouseDown });
-    query(vnode).simulate.mouseDown(element, { pageX: 100, pageY: 200 });
+    createQuery(vnode).simulate.mouseDown(element, { pageX: 100, pageY: 200 });
     expect(handleMouseDown).to.be.calledWith(sinon.match({ target: element, pageX: 100, pageY: 200 }));
   });
 
@@ -67,7 +67,7 @@ describe('simulator', () => {
     let element = {};
     let handleMouseUp = sinon.stub();
     let vnode = h('input', { type: 'text', onmouseup: handleMouseUp });
-    query(vnode).simulate.mouseUp(element);
+    createQuery(vnode).simulate.mouseUp(element);
     expect(handleMouseUp).to.be.calledWith(sinon.match({ target: element }));
   });
 
@@ -75,7 +75,7 @@ describe('simulator', () => {
     let element = {};
     let handleClick = sinon.stub();
     let vnode = h('input', { type: 'text', onclick: handleClick });
-    query(vnode).simulate.click(element);
+    createQuery(vnode).simulate.click(element);
     expect(handleClick).to.be.calledWith(sinon.match({ target: element }));
   });
 
@@ -90,7 +90,7 @@ describe('simulator', () => {
       expect(evt.target).to.deep.include({ value: 'a' });
     });
     let vnode = h('input', { type: 'text', onkeydown: handleKeyDown, onkeyup: handleKeyUp });
-    query(vnode).simulate.keyPress('a', '', 'a', element);
+    createQuery(vnode).simulate.keyPress('a', '', 'a', element);
     expect(handleKeyDown).to.be.calledOnce;
     expect(handleKeyUp).to.be.calledOnce;
   });
@@ -98,7 +98,7 @@ describe('simulator', () => {
   it('can simulate keypress firing input', () => {
     let handleInput = sinon.stub();
     let vnode = h('input', { type: 'text', oninput: handleInput });
-    query(vnode).simulate.keyPress(97, '', 'a');
+    createQuery(vnode).simulate.keyPress(97, '', 'a');
     expect(handleInput).to.be.calledWith(sinon.match({ target: { value: 'a' } }));
   });
 
@@ -111,7 +111,7 @@ describe('simulator', () => {
     let handleKeyUp = sinon.stub();
 
     let vnode = h('input', { type: 'text', onkeydown: handleKeyDown, onkeyup: handleKeyUp, oninput: handleInput });
-    query(vnode).simulate.keyPress('a', 'initial', 'should not be this', element);
+    createQuery(vnode).simulate.keyPress('a', 'initial', 'should not be this', element);
     expect(handleKeyDown).to.have.been.calledOnce;
     expect(handleInput).to.not.have.been.calledOnce;
     expect(handleKeyUp).to.have.been.calledOnce;
@@ -124,7 +124,7 @@ describe('simulator', () => {
       evt.stopPropagation();
     };
     let vnode = h('input', { type: 'text', onclick: handleClick });
-    let event = query(vnode).simulate.click({});
+    let event = createQuery(vnode).simulate.click({});
     expect(event.defaultPrevented).to.equal(true);
     expect((event as any).propagationStopped).to.equal(true);
   });

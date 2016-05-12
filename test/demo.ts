@@ -1,6 +1,6 @@
 import {expect} from './test-utilities';
 import {h, Component} from 'maquette';
-import {createTestProjector} from '../src/index';
+import {createTestProjector} from '../src/test-projector';
 
 // The hello world application
 let createHelloWorldApp = () => {
@@ -35,7 +35,7 @@ describe('hello world app', () => {
   beforeEach(() => {
     helloWorldApp = createHelloWorldApp();
     projector.initialize(helloWorldApp.renderMaquette);
-    inputElement = {value: ''} as any;
+    inputElement = { value: '' } as any;
     input.setTargetDomNode(inputElement);
   });
 

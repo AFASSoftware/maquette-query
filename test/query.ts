@@ -1,11 +1,12 @@
-import {expect, sinon} from './test-utilities';
+import {expect} from './test-utilities';
 import {h, VNode} from 'maquette';
-import {createTestProjector} from '../src/index';
+import {createTestProjector} from '../src/test-projector';
 
 describe('query', () => {
 
-  let query = (vnode: VNode) => {
-    return createTestProjector(() => vnode);
+  // Convenience method for these tests
+  let createQuery = (vnode: VNode) => {
+    return createTestProjector(() => vnode).root;
   };
 
   describe('selector', () => {
@@ -17,35 +18,35 @@ describe('query', () => {
     ]);
 
     it('can find an element by className', () => {
-      expect(query(tree).query('.classC')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
-      expect(query(tree).query('.classA')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
+      expect(createQuery(tree).query('.classC')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
+      expect(createQuery(tree).query('.classA')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
     });
 
     it('can find an element by tagname', () => {
-      expect(query(tree).query('p')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
-      expect(query(tree).query('span')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
+      expect(createQuery(tree).query('p')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
+      expect(createQuery(tree).query('span')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
     });
 
     it('can find an element by id', () => {
-      expect(query(tree).query('#id2')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
-      expect(query(tree).query('#id1')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
+      expect(createQuery(tree).query('#id2')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
+      expect(createQuery(tree).query('#id1')).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
     });
 
     it('can find all elements by className', () => {
-      let results = query(tree).queryAll('.classA');
+      let results = createQuery(tree).queryAll('.classA');
       expect(results.execute()).to.have.length(2);
       expect(results.getResult(0)).to.deep.include({ vnodeSelector: 'span.classA.classB#id1' });
       expect(results.getResult(1)).to.deep.include({ vnodeSelector: 'span.classA' });
     });
 
     it('can find an element using a predicate function', () => {
-      let result = query(tree).query((vnode: VNode) => vnode.vnodeSelector.indexOf('#') === -1);
+      let result = createQuery(tree).query((vnode: VNode) => vnode.vnodeSelector.indexOf('#') === -1);
       expect(result.vnodeSelector).to.equal('span.classA');
     });
 
     it('throws an error for invalid selectors', () => {
       expect(() => {
-        query(tree).query(<any>5);
+        createQuery(tree).query(<any>5);
       }).to.throw();
     });
 
@@ -54,11 +55,11 @@ describe('query', () => {
   describe('textContent', () => {
 
     it('returns the sole text content of a vnode', () => {
-      expect(query(h('button', ['Click me'])).textContent).to.equal('Click me');
+      expect(createQuery(h('button', ['Click me'])).textContent).to.equal('Click me');
     });
 
     it('returns text segments of a vnode and its descendants', () => {
-      expect(query(h('p', [
+      expect(createQuery(h('p', [
         'A ',
         h('i', ['funny']),
         ' tale'

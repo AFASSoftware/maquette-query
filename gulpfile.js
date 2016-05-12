@@ -233,3 +233,13 @@ gulp.task('dev', function() {
     });
   });
 });
+
+gulp.task('commit', function () {
+  process.argv = ['node', 'tsa', 'commit'];
+  require('typescript-assistant/build/js/src/index');
+});
+
+gulp.task('assist', function () {
+  process.argv = ['node', 'tsa'];
+  require('typescript-assistant/build/js/src/index');
+});
