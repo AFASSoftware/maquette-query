@@ -128,4 +128,12 @@ describe('simulator', () => {
     expect(event.defaultPrevented).to.equal(true);
     expect((event as any).propagationStopped).to.equal(true);
   });
+
+  it('can simulate mousewheel', () => {
+    let element = {};
+    let handleMouseWheel = sinon.stub();
+    let vnode = h('div', { onmousewheel: handleMouseWheel });
+    createQuery(vnode).simulate.mouseWheel({}, element);
+    expect(handleMouseWheel).to.be.calledWith(sinon.match({ target: element }));
+  });
 });
