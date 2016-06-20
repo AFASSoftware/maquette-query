@@ -175,7 +175,7 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
     },
 
     mouseWheel: (deltas: {deltaX?: number, deltaY?: number}, fakeDomNode?: Object) => {
-      let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
+      let event = createEvent(fakeDomNode || defaultFakeDomNode);
       event.deltaX = deltas.deltaX;
       event.deltaY = deltas.deltaY;
       properties.onmousewheel(event);
