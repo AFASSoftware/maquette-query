@@ -44,6 +44,10 @@ export interface Simulator {
    * Will invoke VNode.properties.onkeydown, VNode.properties.onkeyup, VNode.properties.onkeypress and VNode.properties.oninput
    */
   keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
+  /**
+   * Will invoke VNode.properties.onmousewheel
+   */
+  mouseWheel: (deltas: {deltaX?: number, deltaY?: number}, targetElement?: any) => Event;
 }
 
 export interface MouseEventParameters {
@@ -168,6 +172,14 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       if (properties.onkeyup) {
         properties.onkeyup(createKeyEvent(keyCode, target));
       }
+    },
+
+    mouseWheel: (deltas: {deltaX?: number, deltaY?: number}, fakeDomNode?: Object) => {
+      let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
+      event.deltaX = deltas.deltaX;
+      event.deltaY = deltas.deltaY;
+      properties.onmousewheel(event);
+      return event;
     }
 
   };
