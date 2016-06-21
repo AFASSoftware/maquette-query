@@ -1,6 +1,6 @@
 {
   "name": "maquette-query",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Query utility for maquette's virtual DOM",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
