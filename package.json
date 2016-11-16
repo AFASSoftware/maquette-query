@@ -1,6 +1,6 @@
 {
   "name": "maquette-query",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "description": "Query utility for maquette's virtual DOM",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -29,6 +29,7 @@
     "del": "2.2.0",
     "gulp": "3.9.1",
     "gulp-bump": "2.5.0",
+    "gulp-filter": "4.0.0",
     "gulp-git": "1.12.0",
     "gulp-istanbul": "0.10.3",
     "gulp-mocha": "2.2.0",

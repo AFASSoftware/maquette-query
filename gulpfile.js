@@ -2,8 +2,10 @@ var gulp = require('gulp');
 var del = require('del');
 var sourcemaps = require('gulp-sourcemaps');
 var path = require('path');
+
 var git = require('gulp-git');
 var bump = require('gulp-bump');
+var filter = require('gulp-filter');
 
 var ts = require('gulp-typescript');
 var plumber = require('gulp-plumber');
@@ -95,9 +97,9 @@ function inc(importance) {
 }
 
 // these tasks are called from scripts/release.js
-gulp.task('bump-patch', ['compress'], function () { return inc('patch'); });
-gulp.task('bump-minor', ['compress'], function () { return inc('minor'); });
-gulp.task('bump-major', ['compress'], function () { return inc('major'); });
+gulp.task('bump-patch', [], function () { return inc('patch'); });
+gulp.task('bump-minor', [], function () { return inc('minor'); });
+gulp.task('bump-major', [], function () { return inc('major'); });
 
 gulp.task('test', ['compile'], function() {
   return gulp.src(['build/js/test/**/*.js'], {read: false})
