@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "umd",
         "target": "es5",
         "noImplicitAny": true,
         "outDir": "build/js",
         "rootDir": ".",
         "sourceMap": true,
-        "noEmitOnError": true
+        "noEmitOnError": true,
+        "moduleResolution": "node"
     },
     "exclude": [
         "node_modules",
@@ -17,7 +18,7 @@
         ".idea",
         ".c9"
     ],
-    "filesGlob": [
+    "include": [
         "./src/**/*.ts",
         "./test/**/*.ts",
         "./typings/**/*.ts"
