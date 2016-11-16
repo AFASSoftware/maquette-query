@@ -39,9 +39,9 @@
     "sinon": "1.17.3",
     "sinon-chai": "2.8.0",
     "tslint": "3.11.0",
-    "typescript": "1.8.10",
-    "typescript-assistant": "0.6.8",
-    "typescript-formatter": "2.2.0",
+    "typescript": "2.0.10",
+    "typescript-assistant": "0.6.10",
+    "typescript-formatter": "4.0.1",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0"
   }
