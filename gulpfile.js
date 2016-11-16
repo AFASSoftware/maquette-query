@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var del = require('del');
 var sourcemaps = require('gulp-sourcemaps');
 var path = require('path');
+var git = require('gulp-git');
+var bump = require('gulp-bump');
 
 var ts = require('gulp-typescript');
 var plumber = require('gulp-plumber');
@@ -76,6 +78,26 @@ gulp.task('declaration', function() {
     .dts
 		.pipe(gulp.dest('dist'));
 });
+
+function inc(importance) {
+  // get all the files to bump version in
+  return gulp.src(['./package.json', './bower.json'])
+    // bump the version number in those files
+    .pipe(bump({ type: importance }))
+    // save it back to filesystem
+    .pipe(gulp.dest('./'))
+    // commit the changed version number
+    .pipe(git.commit('bumps package version'))
+    // read only one file to get the version number
+    .pipe(filter('package.json'))
+    // **tag it in the repository**
+    .pipe(tag_version());
+}
+
+// these tasks are called from scripts/release.js
+gulp.task('bump-patch', ['compress'], function () { return inc('patch'); });
+gulp.task('bump-minor', ['compress'], function () { return inc('minor'); });
+gulp.task('bump-major', ['compress'], function () { return inc('major'); });
 
 gulp.task('test', ['compile'], function() {
   return gulp.src(['build/js/test/**/*.js'], {read: false})
