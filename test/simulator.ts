@@ -79,6 +79,15 @@ describe('simulator', () => {
     expect(handleClick).to.be.calledWith(sinon.match({ target: element }));
   });
 
+  it('can simulate right mouse button click', () => {
+    let element = {};
+    let handleClick = sinon.stub();
+    let vnode = h('input', { type: 'text', onclick: handleClick });
+    createQuery(vnode).simulate.click(element, {which: 2});
+    let evt: MouseEvent = handleClick.lastCall.args[0];
+    expect(evt.which).to.equal(2);
+  });
+
   it('can simulate keypress firing keyDown and keyUp', () => {
     let element = {};
     let handleKeyDown = sinon.spy((evt: KeyboardEvent) => {

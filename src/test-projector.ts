@@ -65,21 +65,21 @@ let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
 
 // The create methods
 
-let createCollectionQuery: (getVNodes: () => VNode[]) => NodeListQuery;
+let createCollectionQuery: (getVNodes: () => VNode[], getDebugInfo: () => any[]) => NodeListQuery;
 
-let createQuery = (getVNode: () => VNode): NodeQuery => {
+let createQuery = (getVNode: () => VNode, getDebugInfo: () => any[]): NodeQuery => {
   let query = (selector: string | VNodePredicate, fakeDomNode?: Object) => {
     let predicate = makeSelectorFunction(selector);
-    return createQuery(() => filterDescendants(getVNode(), predicate)[0]);
+    return createQuery(() => filterDescendants(getVNode(), predicate)[0], () => [...getDebugInfo(), selector]);
   };
   let queryAll = (selector: string | VNodePredicate) => {
     let predicate = makeSelectorFunction(selector);
-    return createCollectionQuery(() => filterDescendants(getVNode(), predicate));
+    return createCollectionQuery(() => filterDescendants(getVNode(), predicate), () => [...getDebugInfo(), selector]);
   };
   let getResult = () => {
     let result = getVNode();
     if (!result) {
-      throw new Error('Query did not match a VNode');
+      throw new Error('Query did not match a VNode: '+ JSON.stringify(getDebugInfo(), undefined, 2));
     }
     return result;
   };
@@ -104,7 +104,7 @@ let createQuery = (getVNode: () => VNode): NodeQuery => {
     getChild: (index: number) => {
       return createQuery(() => {
         return getResult().children[index];
-      });
+      }, () => [...getDebugInfo(), 'child:' + index]);
     },
     /**
      * A small facade that allows firing of simple events and sequences of events for common usecases.
@@ -121,13 +121,13 @@ let createQuery = (getVNode: () => VNode): NodeQuery => {
   };
 };
 
-createCollectionQuery = (getVNodes: () => VNode[]): NodeListQuery => {
+createCollectionQuery = (getVNodes: () => VNode[], getDebugInfo: () => any[]): NodeListQuery => {
   return {
     execute: getVNodes,
     getResult: (index) => {
       return createQuery(() => {
         return getVNodes()[index];
-      });
+      }, () => [...getDebugInfo(), 'result:' + index]);
     },
     get length() {
       return getVNodes().length;
@@ -152,7 +152,7 @@ export let createTestProjector = (renderMaquetteFunction?: () => VNode): TestPro
     return {
       children: [getRootVNode()]
     } as any as VNode;
-  });
+  }, () => [getRootVNode()]);
 
   return {
     initialize: (initializeRenderMaquetteFunction: () => VNode) => {
@@ -161,7 +161,7 @@ export let createTestProjector = (renderMaquetteFunction?: () => VNode): TestPro
     uninitialize: () => {
       renderMaquetteFunction = undefined;
     },
-    root: createQuery(getRootVNode),
+    root: createQuery(getRootVNode, () => [getRootVNode()]),
     query: createQueryStart.query,
     queryAll: createQueryStart.queryAll
   };

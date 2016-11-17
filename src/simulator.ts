@@ -53,6 +53,10 @@ export interface Simulator {
 export interface MouseEventParameters {
   pageX?: number;
   pageY?: number;
+  which?: number;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  [key: string]: any;
 }
 
 let createEvent = (target: any): Event => {
@@ -81,8 +85,7 @@ let createKeyEvent = (which: number, target: any): KeyboardEvent => {
 let createMouseEvent = (target: any, parameters?: MouseEventParameters): MouseEvent => {
   let event = <any>createEvent(target);
   if (parameters) {
-    event.pageX = parameters.pageX;
-    event.pageY = parameters.pageY;
+    Object.keys(parameters).forEach(param => {event[param] = parameters[param]});
   }
   return event;
 };
