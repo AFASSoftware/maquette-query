@@ -83,8 +83,9 @@ let createQuery = (getVNode: () => VNode, getDebugInfo: () => any[]): NodeQuery 
     }
     return result;
   };
-  let targetDomNode: Object;
+  let targetDomNode: Object | undefined;
   return {
+    debug: () => JSON.stringify(getDebugInfo()),
     execute: getResult,
     exists: () => !!getVNode(),
     query,
@@ -96,14 +97,14 @@ let createQuery = (getVNode: () => VNode, getDebugInfo: () => any[]): NodeQuery 
       return getResult().vnodeSelector;
     },
     get properties(): VNodeProperties {
-      return getResult().properties;
+      return getResult().properties || {};
     },
     get children(): VNode[] {
-      return getResult().children;
+      return getResult().children || [];
     },
     getChild: (index: number) => {
       return createQuery(() => {
-        return getResult().children[index];
+        return getResult().children![index];
       }, () => [...getDebugInfo(), 'child:' + index]);
     },
     /**

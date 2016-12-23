@@ -30,6 +30,10 @@ export interface QueryBase {
  */
 export interface NodeQuery extends QueryBase {
   /**
+   * Returns a string representation of the VNode tree and the query.
+   */
+  debug(): string;
+  /**
    * Executes the Query and returns the resulting VNode.
    *
    * Throws an Error if a result is not found.

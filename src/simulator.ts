@@ -99,60 +99,60 @@ let getKeyCode = (keyCodeOrChar: number | string) => {
 };
 
 export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => {
-  let properties = vnode.properties;
+  let properties = vnode.properties!;
   return {
 
     keyDown: (keyCode: number | string, fakeDomNode?: Object) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
-      properties.onkeydown(event);
+      properties.onkeydown!(event);
       return event;
     },
 
     keyUp: (keyCode: number | string, fakeDomNode?: Object) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
-      properties.onkeyup(event);
+      properties.onkeyup!(event);
       return event;
     },
 
     mouseDown: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmousedown(event);
+      properties.onmousedown!(event);
       return event;
     },
 
     mouseUp: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmouseup(event);
+      properties.onmouseup!(event);
       return event;
     },
 
     click: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onclick(event);
+      properties.onclick!(event);
       return event;
     },
 
     input: (fakeDomNode?: Object) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
-      properties.oninput(event);
+      properties.oninput!(event);
       return event;
     },
 
     change: (fakeDomNode?: Object) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onchange(event);
+      properties.onchange!(event);
       return event;
     },
 
     focus: (fakeDomNode?: Object) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onfocus(event);
+      properties.onfocus!(event);
       return event;
     },
 
     blur: (fakeDomNode?: Object) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onblur(event);
+      properties.onblur!(event);
       return event;
     },
 
@@ -181,7 +181,7 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
       event.deltaX = deltas.deltaX;
       event.deltaY = deltas.deltaY;
-      properties.onmousewheel(event);
+      properties.onmousewheel!(event);
       return event;
     }
 
