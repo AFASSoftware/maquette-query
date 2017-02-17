@@ -1,6 +1,6 @@
-import {expect} from './test-utilities';
-import {h, Component} from 'maquette';
-import {createTestProjector} from '../src/test-projector';
+import { expect } from './test-utilities';
+import { Component, h } from 'maquette';
+import { createTestProjector } from '../src/test-projector';
 
 // The hello world application
 let createHelloWorldApp = () => {

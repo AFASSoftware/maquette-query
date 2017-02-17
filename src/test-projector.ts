@@ -1,12 +1,12 @@
-import {VNode, VNodeProperties} from 'maquette';
-import {Simulator, createSimulator} from './simulator';
-import {NodeQuery, NodeListQuery, QueryBase, VNodePredicate} from './query';
+import { VNode, VNodeProperties } from 'maquette';
+import { createSimulator, Simulator } from './simulator';
+import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from './query';
 
 /**
  * see `createTestProjector`
  */
 export interface TestProjector extends QueryBase {
-  initialize: (renderMaquette: () => VNode) => void;
+  initialize: (renderMaquette: () => NullableVNode) => void;
   uninitialize: () => void;
   root: NodeQuery;
 }
@@ -31,7 +31,7 @@ let makeSelectorFunction = (selector: string | VNodePredicate): VNodePredicate =
   }
 };
 
-let filterDescendants = (root: VNode, predicate: VNodePredicate): VNode[] => {
+let filterDescendants = (root: NullableVNode, predicate: VNodePredicate): VNode[] => {
   let results: VNode[] = [];
   let visit = (vnodeTree: VNode) => {
     if (vnodeTree.children) {
@@ -43,7 +43,9 @@ let filterDescendants = (root: VNode, predicate: VNodePredicate): VNode[] => {
       });
     }
   };
-  visit(root);
+  if (root) {
+    visit(root);
+  }
   return results;
 };
 
@@ -67,7 +69,7 @@ let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
 
 let createCollectionQuery: (getVNodes: () => VNode[], getDebugInfo: () => any[]) => NodeListQuery;
 
-let createQuery = (getVNode: () => VNode, getDebugInfo: () => any[]): NodeQuery => {
+let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): NodeQuery => {
   let query = (selector: string | VNodePredicate, fakeDomNode?: Object) => {
     let predicate = makeSelectorFunction(selector);
     return createQuery(() => filterDescendants(getVNode(), predicate)[0], () => [...getDebugInfo(), selector]);
@@ -136,12 +138,14 @@ createCollectionQuery = (getVNodes: () => VNode[], getDebugInfo: () => any[]): N
   };
 };
 
+export type NullableVNode = VNode | null | undefined;
+
 /**
  * Creates a test projector which implements the QueryBase interface
  * @param renderMaquetteFunction  Optional, the renderMaquette function that is used to produce the VNode tree.
  *                                when not specified, you must use the initialize function to supply the renderMaquetteFunction.
  */
-export let createTestProjector = (renderMaquetteFunction?: () => VNode): TestProjector => {
+export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode): TestProjector => {
   let getRootVNode = () => {
     if (!renderMaquetteFunction) {
       throw new Error('TestProjector is not initialized');
