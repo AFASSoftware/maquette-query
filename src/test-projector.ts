@@ -6,9 +6,9 @@ import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from './query';
  * see `createTestProjector`
  */
 export interface TestProjector extends QueryBase {
-  initialize: (renderMaquette: () => NullableVNode) => void;
-  uninitialize: () => void;
   root: NodeQuery;
+  initialize(renderMaquette: () => NullableVNode): void;
+  uninitialize(): void;
 }
 
 // Helper functions
@@ -160,7 +160,7 @@ export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode):
   }, () => [getRootVNode()]);
 
   return {
-    initialize: (initializeRenderMaquetteFunction: () => VNode) => {
+    initialize: (initializeRenderMaquetteFunction: () => NullableVNode) => {
       renderMaquetteFunction = initializeRenderMaquetteFunction;
     },
     uninitialize: () => {
