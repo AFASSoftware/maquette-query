@@ -71,6 +71,22 @@ describe('simulator', () => {
     expect(handleMouseUp).to.be.calledWith(sinon.match({ target: element }));
   });
 
+  it('can simulate mouseOver', () => {
+    let element = {};
+    let handleMouseOver = sinon.stub();
+    let vnode = h('input', { type: 'text', onmouseover: handleMouseOver });
+    createQuery(vnode).simulate.mouseOver(element);
+    expect(handleMouseOver).to.be.calledWith(sinon.match({ target: element }));
+  });
+
+  it('can simulate mouseOut', () => {
+    let element = {};
+    let handleMouseOut = sinon.stub();
+    let vnode = h('input', { type: 'text', onmouseout: handleMouseOut });
+    createQuery(vnode).simulate.mouseOut(element);
+    expect(handleMouseOut).to.be.calledWith(sinon.match({ target: element }));
+  });
+
   it('can simulate click', () => {
     let element = {};
     let handleClick = sinon.stub();

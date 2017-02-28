@@ -21,6 +21,14 @@ export interface Simulator {
    */
   mouseUp: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
   /**
+   * Will invoke VNode.properties.onmouseover
+   */
+  mouseOver: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  /**
+   * Will invoke VNode.properties.onmouseout
+   */
+  mouseOut: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  /**
    * Will invoke VNode.properties.onclick
    */
   click: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
@@ -123,6 +131,18 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
     mouseUp: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmouseup!(event);
+      return event;
+    },
+
+    mouseOver: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
+      properties.onmouseover!(event);
+      return event;
+    },
+
+    mouseOut: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+      let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
+      properties.onmouseout!(event);
       return event;
     },
 
