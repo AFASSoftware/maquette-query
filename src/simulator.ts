@@ -112,67 +112,67 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
 
     keyDown: (keyCode: number | string, fakeDomNode?: Object) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
-      properties.onkeydown!(event);
+      properties.onkeydown!.call(properties.bind || properties, event);
       return event;
     },
 
     keyUp: (keyCode: number | string, fakeDomNode?: Object) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
-      properties.onkeyup!(event);
+      properties.onkeyup!.call(properties.bind || properties, event);
       return event;
     },
 
     mouseDown: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmousedown!(event);
+      properties.onmousedown!.call(properties.bind || properties, event);
       return event;
     },
 
     mouseUp: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmouseup!(event);
+      properties.onmouseup!.call(properties.bind || properties, event);
       return event;
     },
 
     mouseOver: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmouseover!(event);
+      properties.onmouseover!.call(properties.bind || properties, event);
       return event;
     },
 
     mouseOut: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onmouseout!(event);
+      properties.onmouseout!.call(properties.bind || properties, event);
       return event;
     },
 
     click: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
-      properties.onclick!(event);
+      properties.onclick!.call(properties.bind || properties, event);
       return event;
     },
 
     input: (fakeDomNode?: Object) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
-      properties.oninput!(event);
+      properties.oninput!.call(properties.bind || properties, event);
       return event;
     },
 
     change: (fakeDomNode?: Object) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onchange!(event);
+      properties.onchange!.call(properties.bind || properties, event);
       return event;
     },
 
     focus: (fakeDomNode?: Object) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onfocus!(event);
+      properties.onfocus!.call(properties.bind || properties, event);
       return event;
     },
 
     blur: (fakeDomNode?: Object) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
-      properties.onblur!(event);
+      properties.onblur!.call(properties.bind || properties, event);
       return event;
     },
 
@@ -182,18 +182,18 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       target.value = valueBefore;
       let keyDownEvent = createKeyEvent(keyCode, target);
       if (properties.onkeydown) {
-        properties.onkeydown(keyDownEvent);
+        properties.onkeydown.call(properties.bind || properties, keyDownEvent);
       }
 
       if (!keyDownEvent.defaultPrevented) {
         target.value = valueAfter;
         if (properties.oninput) {
-          properties.oninput(createEvent(target));
+          properties.oninput.call(properties.bind || properties, createEvent(target));
         }
       }
 
       if (properties.onkeyup) {
-        properties.onkeyup(createKeyEvent(keyCode, target));
+        properties.onkeyup.call(properties.bind || properties, createKeyEvent(keyCode, target));
       }
     },
 
@@ -201,7 +201,7 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
       event.deltaX = deltas.deltaX;
       event.deltaY = deltas.deltaY;
-      properties.onmousewheel!(event);
+      properties.onmousewheel!.call(properties.bind || properties, event);
       return event;
     }
 
