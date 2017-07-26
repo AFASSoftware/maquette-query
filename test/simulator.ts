@@ -1,11 +1,28 @@
 import {expect, sinon} from './test-utilities';
-import {h, VNode} from 'maquette';
+import {h, VNode, VNodeProperties} from 'maquette';
 import {createTestProjector} from '../src/test-projector';
 
 describe('simulator', () => {
 
   let createQuery = (vnode: VNode) => {
     return createTestProjector(() => vnode).root;
+  };
+
+  let simulateAllEvents = (vnode: VNode) => {
+    let {simulate} = createQuery(vnode);
+    simulate.blur();
+    simulate.change();
+    simulate.click();
+    simulate.focus();
+    simulate.input();
+    simulate.keyDown(0);
+    simulate.keyUp(0);
+    simulate.keyPress(0, 'before', 'after');
+    simulate.mouseDown();
+    simulate.mouseOut();
+    simulate.mouseOver();
+    simulate.mouseUp();
+    simulate.mouseWheel({});
   };
 
   it('can simulate input', () => {
@@ -160,5 +177,48 @@ describe('simulator', () => {
     let vnode = h('div', { onmousewheel: handleMouseWheel });
     createQuery(vnode).simulate.mouseWheel({}, element);
     expect(handleMouseWheel).to.be.calledWith(sinon.match({ target: element }));
+  });
+
+  it('this === vnodeProperties (default)', () => {
+    let handler = sinon.stub();
+    let vnode = h('div', {
+      onblur: handler,
+      onchange: handler,
+      onclick: handler,
+      onfocus: handler,
+      oninput: handler,
+      onkeydown: handler,
+      onkeyup: handler,
+      onkeypress: handler,
+      onmousedown: handler,
+      onmouseout: handler,
+      onmouseover: handler,
+      onmouseup: handler,
+      onmousewheel: handler
+    });
+    simulateAllEvents(vnode);
+    expect(handler.thisValues).to.satisfy((thisArgs: Object[]) => thisArgs.every(thisArg => thisArg === vnode.properties));
+  });
+
+  it('this === vnodeProperties.bind when provided', () => {
+    let handler = sinon.stub();
+    let vnode = h('div', {
+      bind: {},
+      onblur: handler,
+      onchange: handler,
+      onclick: handler,
+      onfocus: handler,
+      oninput: handler,
+      onkeydown: handler,
+      onkeyup: handler,
+      onkeypress: handler,
+      onmousedown: handler,
+      onmouseout: handler,
+      onmouseover: handler,
+      onmouseup: handler,
+      onmousewheel: handler
+    });
+    simulateAllEvents(vnode);
+    expect(handler.thisValues).to.satisfy((thisArgs: VNodeProperties[]) => thisArgs.every(thisArg => thisArg === vnode.properties!.bind));
   });
 });
