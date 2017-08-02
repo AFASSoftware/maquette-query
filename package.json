@@ -7,7 +7,55 @@
   "scripts": {
     "release": "tsa release",
     "prepublishOnly": "tsc -d",
-    "test": "./node_modules/.bin/gulp"
+    "assist": "tsa",
+    "fix": "tsa fix",
+    "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
+    "coverage-show": "open ./build/coverage/index.html",
+    "postmerge": "tsa post-merge",
+    "precommit": "tsa pre-commit",
+    "prepush": "tsc && cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
+    "postcheckout": "tsa post-checkout"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "json",
+      "html",
+      "text-summary"
+    ],
+    "cache": true,
+    "temp-directory": "./build/nyc/cache",
+    "all": true,
+    "check-coverage": false,
+    "report-dir": "./build/coverage",
+    "es-module": false,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "watermarks": {
+      "lines": [
+        75,
+        100
+      ],
+      "functions": [
+        75,
+        100
+      ],
+      "branches": [
+        75,
+        100
+      ],
+      "statements": [
+        75,
+        100
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -25,30 +73,10 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "browser-sync": "2.18.8",
-    "chai": "3.5.0",
-    "del": "2.2.2",
-    "gulp": "3.9.1",
-    "gulp-bump": "2.6.1",
-    "gulp-filter": "5.0.0",
-    "gulp-git": "2.0.0",
-    "gulp-istanbul": "1.1.1",
-    "gulp-mocha": "3.0.1",
-    "gulp-plumber": "1.1.0",
-    "gulp-sourcemaps": "1.6.0",
-    "gulp-tag-version": "1.3.0",
-    "gulp-typescript": "2.11.0",
-    "inquirer": "3.0.1",
     "maquette": "^2.2.0",
-    "mocha": "3.2.0",
-    "remap-istanbul": "0.9.1",
-    "sinon": "1.17.7",
-    "sinon-chai": "2.8.0",
-    "tslint": "4.4.2",
-    "typescript": "2.1.6",
-    "typescript-assistant": "0.13.3",
-    "typescript-formatter": "4.1.1",
-    "vinyl-buffer": "1.0.0",
-    "vinyl-source-stream": "1.1.0"
+    "open": "0.0.5",
+    "sinon": "2.4.1",
+    "sinon-chai": "2.12.0",
+    "typescript-assistant": "0.13.4"
   }
 }
