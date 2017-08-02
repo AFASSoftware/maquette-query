@@ -1,9 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "strictNullChecks": false,
-    "outDir": "../build/js",
-    "rootDir": ".."
+    "strictNullChecks": false
   },
   "include": [
     "./**/*.ts",
