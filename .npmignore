@@ -1,6 +1,6 @@
 /**/*
 !LICENSE
 !README.md
-!/dist
-!/src
-!/typings
+!/dist/**/*
+!/src/**/*
+!/typings/**/*
