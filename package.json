@@ -9,7 +9,7 @@
     "coverage-show": "open ./build/coverage/index.html",
     "assist": "tsa",
     "fix": "tsa fix",
-    "prepublishOnly": "tsa clean && tsc -d --rootDir ./src --outDir ./dist",
+    "prepublishOnly": "tsa clean && tsc -d --rootDir ./src --outDir ./dist --module umd",
     "clean": "tsa clean",
     "release": "tsa release",
     "postmerge": "tsa post-merge",
