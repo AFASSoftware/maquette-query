@@ -6,16 +6,17 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
-    "coverage-show": "open ./build/coverage/index.html",
+    "coverage-show": "opn build/coverage/index.html",
     "assist": "tsa",
     "fix": "tsa fix",
+    "ci": "tsa ci -- -d --rootDir ./src --outDir ./dist --module umd",
     "prepublishOnly": "tsa clean && tsc -d --rootDir ./src --outDir ./dist --module umd",
     "clean": "tsa clean",
     "release": "tsa release",
-    "postmerge": "tsa post-merge",
+    "postcheckout": "node node_modules/typescript-assistant/dist/index post-checkout",
+    "postmerge": "node node_modules/typescript-assistant/dist/index post-merge",
     "precommit": "tsa pre-commit",
-    "prepush": "tsc -d && cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
-    "postcheckout": "tsa post-checkout"
+    "prepush": "tsa pre-push"
   },
   "nyc": {
     "include": [
@@ -74,10 +75,10 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "maquette": "^2.2.0",
-    "open": "0.0.5",
-    "sinon": "2.4.1",
-    "sinon-chai": "2.12.0",
-    "typescript-assistant": "0.13.4"
+    "maquette": "2.5.3",
+    "opn-cli": "3.1.0",
+    "sinon": "3.2.1",
+    "sinon-chai": "2.13.0",
+    "typescript-assistant": "0.14.2"
   }
 }
