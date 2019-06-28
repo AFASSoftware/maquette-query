@@ -1,15 +1,14 @@
-import {expect, sinon} from './test-utilities';
-import {h, VNode, VNodeProperties} from 'maquette';
-import {createTestProjector} from '../src/test-projector';
+import { expect, sinon } from './test-utilities';
+import { h, VNode, VNodeProperties } from 'maquette';
+import { createTestProjector } from '../src/test-projector';
 
 describe('simulator', () => {
-
   let createQuery = (vnode: VNode) => {
     return createTestProjector(() => vnode).root;
   };
 
   let simulateAllEvents = (vnode: VNode) => {
-    let {simulate} = createQuery(vnode);
+    let { simulate } = createQuery(vnode);
     simulate.blur();
     simulate.change();
     simulate.click();
@@ -116,7 +115,7 @@ describe('simulator', () => {
     let element = {};
     let handleClick = sinon.stub();
     let vnode = h('input', { type: 'text', onclick: handleClick });
-    createQuery(vnode).simulate.click(element, {which: 2});
+    createQuery(vnode).simulate.click(element, { which: 2 });
     let evt: MouseEvent = handleClick.lastCall.args[0];
     expect(evt.which).to.equal(2);
   });
@@ -219,6 +218,6 @@ describe('simulator', () => {
       onmousewheel: handler
     });
     simulateAllEvents(vnode);
-    expect(handler.thisValues).to.satisfy((thisArgs: VNodeProperties[]) => thisArgs.every(thisArg => thisArg === vnode.properties!.bind));
+    expect(handler.thisValues).to.satisfy((thisArgs: VNodeProperties[]) => thisArgs.every(thisArg => thisArg === vnode.properties.bind));
   });
 });

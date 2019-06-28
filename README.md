@@ -19,6 +19,6 @@ input.simulate.input({ value: 'John' });
 expect(output.textContent).to.equal('Hello John!');
 ```
 
-For the complete sourcecode see [here](test/demo.ts)
+For the complete sourcecode see [here](test/demo-tests.ts)
 
 If you find anything missing, do not hesitate to issue a pull request.

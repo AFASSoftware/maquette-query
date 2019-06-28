@@ -1,21 +1,23 @@
-import {expect} from './test-utilities';
-import {h, VNode} from 'maquette';
-import {createTestProjector} from '../src/test-projector';
+import { expect } from './test-utilities';
+import { h, VNode } from 'maquette';
+import { createTestProjector } from '../src/test-projector';
 
 describe('query', () => {
-
   // Convenience method for these tests
   let createQuery = (vnode: VNode) => {
     return createTestProjector(() => vnode).root;
   };
 
   describe('selector', () => {
+    let tree!: VNode;
 
-    let tree = h('div', [
-      h('span.classA.classB#id1'),
-      h('span.classA'),
-      h('p.classC#id2')
-    ]);
+    beforeEach(() => {
+      tree = h('div', [
+        h('span.classA.classB#id1'),
+        h('span.classA'),
+        h('p.classC#id2')
+      ]);
+    });
 
     it('can find an element by className', () => {
       expect(createQuery(tree).query('.classC')).to.deep.include({ vnodeSelector: 'p.classC#id2' });
@@ -53,7 +55,6 @@ describe('query', () => {
   });
 
   describe('textContent', () => {
-
     it('returns the sole text content of a vnode', () => {
       expect(createQuery(h('button', ['Click me'])).textContent).to.equal('Click me');
     });

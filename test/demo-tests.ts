@@ -17,14 +17,13 @@ let createHelloWorldApp = () => {
           type: 'text', placeholder: 'What is your name?',
           value: name, oninput: handleNameInput
         }),
-        h('p.output', ['Hello ' + (name || 'you') + '!'])
+        h('p.output', [`Hello ${name || 'you'}!`])
       ]);
     }
   };
 };
 
 describe('hello world app', () => {
-
   let helloWorldApp: Component;
   let projector = createTestProjector();
   let inputElement: HTMLInputElement; // not really useful in this particular application, but added just for demonstration purposes.

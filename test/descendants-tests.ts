@@ -1,6 +1,6 @@
-import {expect} from './test-utilities';
-import {h} from 'maquette';
-import {createTestProjector} from '../src/test-projector';
+import { expect } from './test-utilities';
+import { h } from 'maquette';
+import { createTestProjector } from '../src/test-projector';
 
 describe('descendants', () => {
   it('can query nodes in the tree of descendants', () => {

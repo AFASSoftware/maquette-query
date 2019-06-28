@@ -1,4 +1,4 @@
-import {VNode} from 'maquette';
+import { VNode } from 'maquette';
 
 /**
  * Simulator to execute common user-interactions. Provides convenient wrappers for VNode.properties.on??? calls.
@@ -7,55 +7,55 @@ export interface Simulator {
   /**
    * Will invoke VNode.properties.onkeydown
    */
-  keyDown: (keyCode: number | string, targetElement?: any) => KeyboardEvent;
+  keyDown(keyCode: number | string, targetElement?: any): KeyboardEvent;
   /**
    * Will invoke VNode.properties.onkeyup
    */
-  keyUp: (keyCode: number | string, targetElement?: any) => KeyboardEvent;
+  keyUp(keyCode: number | string, targetElement?: any): KeyboardEvent;
   /**
    * Will invoke VNode.properties.onmousedown
    */
-  mouseDown: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseDown(targetElement?: any, parameters?: MouseEventParameters): MouseEvent;
   /**
    * Will invoke VNode.properties.onmouseup
    */
-  mouseUp: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseUp(targetElement?: any, parameters?: MouseEventParameters): MouseEvent;
   /**
    * Will invoke VNode.properties.onmouseover
    */
-  mouseOver: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseOver(targetElement?: any, parameters?: MouseEventParameters): MouseEvent;
   /**
    * Will invoke VNode.properties.onmouseout
    */
-  mouseOut: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  mouseOut(targetElement?: any, parameters?: MouseEventParameters): MouseEvent;
   /**
    * Will invoke VNode.properties.onclick
    */
-  click: (targetElement?: any, parameters?: MouseEventParameters) => MouseEvent;
+  click(targetElement?: any, parameters?: MouseEventParameters): MouseEvent;
   /**
    * Will invoke VNode.properties.oninput
    */
-  input: (targetElement?: any) => Event;
+  input(targetElement?: any): Event;
   /**
    * Will invoke VNode.properties.onchange
    */
-  change: (targetElement?: any) => Event;
+  change(targetElement?: any): Event;
   /**
    * Will invoke VNode.properties.onfocus
    */
-  focus: (targetElement?: any) => Event;
+  focus(targetElement?: any): Event;
   /**
    * Will invoke VNode.properties.onblur
    */
-  blur: (targetElement?: any) => Event;
+  blur(targetElement?: any): Event;
   /**
    * Will invoke VNode.properties.onkeydown, VNode.properties.onkeyup, VNode.properties.onkeypress and VNode.properties.oninput
    */
-  keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any) => void;
+  keyPress(keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any): void;
   /**
    * Will invoke VNode.properties.onmousewheel
    */
-  mouseWheel: (deltas: {deltaX?: number, deltaY?: number}, targetElement?: any) => Event;
+  mouseWheel(deltas: { deltaX?: number, deltaY?: number }, targetElement?: any): Event;
 }
 
 export interface MouseEventParameters {
@@ -93,7 +93,7 @@ let createKeyEvent = (which: number, target: any): KeyboardEvent => {
 let createMouseEvent = (target: any, parameters?: MouseEventParameters): MouseEvent => {
   let event = <any>createEvent(target);
   if (parameters) {
-    Object.keys(parameters).forEach(param => {event[param] = parameters[param]});
+    Object.keys(parameters).forEach(param => { event[param] = parameters[param]; });
   }
   return event;
 };
@@ -109,7 +109,6 @@ let getKeyCode = (keyCodeOrChar: number | string) => {
 export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => {
   let properties = vnode.properties!;
   return {
-
     keyDown: (keyCode: number | string, fakeDomNode?: Object) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
       properties.onkeydown!.call(properties.bind || properties, event);
@@ -197,7 +196,7 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       }
     },
 
-    mouseWheel: (deltas: {deltaX?: number, deltaY?: number}, fakeDomNode?: Object) => {
+    mouseWheel: (deltas: { deltaX?: number, deltaY?: number }, fakeDomNode?: Object) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
       event.deltaX = deltas.deltaX;
       event.deltaY = deltas.deltaY;

@@ -1,5 +1,5 @@
-import {VNode, VNodeProperties} from 'maquette';
-import {Simulator} from './simulator';
+import { VNode, VNodeProperties } from 'maquette';
+import { Simulator } from './simulator';
 
 // Interfaces
 // ----------
@@ -14,13 +14,13 @@ export interface QueryBase {
    * @param selector The test that is executed at each descendant of the result of the query.
    * Selector is either a function of a string containing one of the following: a tagname, a dot followed by a className, or a hash followed by an id.
    */
-  query: (selector: string | VNodePredicate) => NodeQuery;
+  query(selector: string | VNodePredicate): NodeQuery;
   /**
    * Creates a new query which matches multiple nodes, starting at the result of this query.
    *
    * @param selector see `query`.
    */
-  queryAll: (selector: string | VNodePredicate) => NodeListQuery;
+  queryAll(selector: string | VNodePredicate): NodeListQuery;
 }
 
 /**
@@ -29,24 +29,6 @@ export interface QueryBase {
  * A query is re-executed each time one of its methods is called. It does NOT cache the result.
  */
 export interface NodeQuery extends QueryBase {
-  /**
-   * Returns a string representation of the VNode tree and the query.
-   */
-  debug(): string;
-  /**
-   * Executes the Query and returns the resulting VNode.
-   *
-   * Throws an Error if a result is not found.
-   */
-  execute(): VNode;
-  /**
-   * Executes the query and returns true if a result is found, false otherwise.
-   */
-  exists(): boolean;
-  /**
-   * Returns a Query new which returns the child at the specified index of the result of this query.
-   */
-  getChild(index: number): NodeQuery;
   /**
    * Executes the Query and returns the textContent of this node and all of its descendants in the same way as HTMLElement.textContent does.
    */
@@ -68,6 +50,24 @@ export interface NodeQuery extends QueryBase {
    */
   simulate: Simulator;
   /**
+   * Returns a string representation of the VNode tree and the query.
+   */
+  debug(): string;
+  /**
+   * Executes the Query and returns the resulting VNode.
+   *
+   * Throws an Error if a result is not found.
+   */
+  execute(): VNode;
+  /**
+   * Executes the query and returns true if a result is found, false otherwise.
+   */
+  exists(): boolean;
+  /**
+   * Returns a Query new which returns the child at the specified index of the result of this query.
+   */
+  getChild(index: number): NodeQuery;
+  /**
    * Registers an object to act as the target DOM node of events that are fired using `simulate`.
    */
   setTargetDomNode(fakeDomNode?: Object): void;
@@ -82,6 +82,10 @@ export interface NodeQuery extends QueryBase {
  */
 export interface NodeListQuery {
   /**
+   * Executes the Query and returns the number of results.
+   */
+  length: number;
+  /**
    * Executes the query.
    */
   execute(): VNode[];
@@ -89,8 +93,4 @@ export interface NodeListQuery {
    * Creates a new Query that returns the result of this query at the specified index.
    */
   getResult(index: number): NodeQuery;
-  /**
-   * Executes the Query and returns the number of results.
-   */
-  length: number;
 }

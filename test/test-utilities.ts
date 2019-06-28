@@ -6,4 +6,4 @@ chai.use(sinonChai);
 
 let expect = chai.expect;
 
-export {chai, expect, sinon};
+export { chai, expect, sinon };

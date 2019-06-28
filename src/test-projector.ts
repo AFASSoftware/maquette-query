@@ -27,7 +27,7 @@ let makeSelectorFunction = (selector: string | VNodePredicate): VNodePredicate =
   } else if (typeof selector === 'function') {
     return selector;
   } else {
-    throw new Error('Invalid selector ' + selector);
+    throw new Error(`Invalid selector ${selector}`);
   }
 };
 
@@ -70,7 +70,7 @@ let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
 let createCollectionQuery: (getVNodes: () => VNode[], getDebugInfo: () => any[]) => NodeListQuery;
 
 let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): NodeQuery => {
-  let query = (selector: string | VNodePredicate, fakeDomNode?: Object) => {
+  let query = (selector: string | VNodePredicate) => {
     let predicate = makeSelectorFunction(selector);
     return createQuery(() => filterDescendants(getVNode(), predicate)[0], () => [...getDebugInfo(), selector]);
   };
@@ -81,7 +81,7 @@ let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): No
   let getResult = () => {
     let result = getVNode();
     if (!result) {
-      throw new Error('Query did not match a VNode: '+ JSON.stringify(getDebugInfo(), undefined, 2));
+      throw new Error(`Query did not match a VNode: ${JSON.stringify(getDebugInfo(), undefined, 2)}`);
     }
     return result;
   };
@@ -107,7 +107,7 @@ let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): No
     getChild: (index: number) => {
       return createQuery(() => {
         return getResult().children![index];
-      }, () => [...getDebugInfo(), 'child:' + index]);
+      }, () => [...getDebugInfo(), `child:${index}`]);
     },
     /**
      * A small facade that allows firing of simple events and sequences of events for common usecases.
@@ -130,7 +130,7 @@ createCollectionQuery = (getVNodes: () => VNode[], getDebugInfo: () => any[]): N
     getResult: (index) => {
       return createQuery(() => {
         return getVNodes()[index];
-      }, () => [...getDebugInfo(), 'result:' + index]);
+      }, () => [...getDebugInfo(), `result:${index}`]);
     },
     get length() {
       return getVNodes().length;
@@ -153,11 +153,11 @@ export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode):
     return renderMaquetteFunction();
   };
 
-  let createQueryStart = createQuery(() => {
-    return {
-      children: [getRootVNode()]
-    } as any as VNode;
-  }, () => [getRootVNode()]);
+  let createQueryStart = createQuery(
+    () =>
+      ({ children: [getRootVNode()] } as any as VNode),
+    () => [getRootVNode()]
+  );
 
   return {
     initialize: (initializeRenderMaquetteFunction: () => NullableVNode) => {

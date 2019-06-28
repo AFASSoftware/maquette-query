@@ -6,7 +6,7 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
-    "coverage-show": "opn build/coverage/index.html",
+    "coverage-show": "open-cli build/coverage/index.html",
     "assist": "tsa",
     "fix": "tsa fix",
     "ci": "tsa ci -- -d --rootDir ./src --outDir ./dist --module umd",
@@ -38,7 +38,7 @@
     "es-module": false,
     "lines": 80,
     "statements": 80,
-    "functions": 80,
+    "functions": 50,
     "branches": 80,
     "watermarks": {
       "lines": [
@@ -75,6 +75,8 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
+    "@types/sinon": "7.0.13",
+    "@types/sinon-chai": "3.2.2",
     "maquette": "3.3.4",
     "open-cli": "5.0.0",
     "sinon": "7.3.2",
