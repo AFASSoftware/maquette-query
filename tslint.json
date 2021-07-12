@@ -1,9 +1,0 @@
-{
-  "extends": [
-    "./node_modules/typescript-assistant/tslint-afas.json"
-  ],
-  "rules": {
-    "ban-types": false, /* We need to use Object sometimes when we refer to primitives or objects */
-    "no-null-keyword": false /* Although we decided at AFAS to prefer undefined to null, maquette's API needs to handle nulls in its API */
-  }
-}

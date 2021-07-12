@@ -9,6 +9,7 @@
     "coverage-show": "open-cli build/coverage/index.html",
     "assist": "tsa",
     "fix": "tsa fix",
+    "fixall": "tsa fixall",
     "ci": "tsa ci -- -d --rootDir ./src --outDir ./dist --module umd",
     "prepublishOnly": "tsa clean && tsc -d --rootDir ./src --outDir ./dist --module umd",
     "clean": "tsa clean",
@@ -75,12 +76,26 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "@types/sinon": "7.0.13",
-    "@types/sinon-chai": "3.2.2",
-    "maquette": "3.3.4",
-    "open-cli": "5.0.0",
-    "sinon": "7.3.2",
-    "sinon-chai": "3.3.0",
-    "typescript-assistant": "0.39.9"
+    "@types/sinon": "10.0.2",
+    "@types/sinon-chai": "3.2.5",
+    "maquette": "3.5.0",
+    "open-cli": "7.0.0",
+    "sinon": "11.1.1",
+    "sinon-chai": "3.7.0",
+    "typescript-assistant": "0.50.1"
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module",
+      "parser": "typescript"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "post-checkout": "tsa post-checkout || exit 0",
+      "post-merge": "tsa post-merge || exit 0",
+      "pre-commit": "tsa pre-commit",
+      "pre-push": "npm run dist && tsa pre-push"
+    }
   }
 }

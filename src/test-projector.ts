@@ -1,6 +1,7 @@
-import { VNode, VNodeProperties } from 'maquette';
-import { createSimulator, Simulator } from './simulator';
-import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from './query';
+import { VNode, VNodeProperties } from "maquette";
+
+import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from "./query";
+import { Simulator, createSimulator } from "./simulator";
 
 /**
  * see `createTestProjector`
@@ -15,19 +16,19 @@ export interface TestProjector extends QueryBase {
 // ----------------
 
 let makeSelectorFunction = (selector: string | VNodePredicate): VNodePredicate => {
-  if (typeof selector === 'string') {
+  if (typeof selector === "string") {
     return (vNode: VNode) => {
       let index = vNode.vnodeSelector.indexOf(selector);
-      if ((selector[0] === '.' || selector[0] === '#') ? (index > 0) : (index === 0)) {
+      if (selector[0] === "." || selector[0] === "#" ? index > 0 : index === 0) {
         let nextChar = vNode.vnodeSelector.charAt(index + selector.length);
-        return !nextChar || nextChar === '.' || nextChar === '#';
+        return !nextChar || nextChar === "." || nextChar === "#";
       }
       return false;
     };
-  } else if (typeof selector === 'function') {
+  } else if (typeof selector === "function") {
     return selector;
   } else {
-    throw new Error(`Invalid selector ${selector}`);
+    throw new Error(`Invalid selector ${typeof selector}`);
   }
 };
 
@@ -50,7 +51,7 @@ let filterDescendants = (root: NullableVNode, predicate: VNodePredicate): VNode[
 };
 
 let collectTextContent = (vnodeTree: VNode, results: string[]): string[] => {
-  if (vnodeTree.vnodeSelector === '') {
+  if (vnodeTree.vnodeSelector === "") {
     results.push((<any>vnodeTree).text);
   } else {
     if ((<any>vnodeTree).text) {
@@ -72,20 +73,28 @@ let createCollectionQuery: (getVNodes: () => VNode[], getDebugInfo: () => any[])
 let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): NodeQuery => {
   let query = (selector: string | VNodePredicate) => {
     let predicate = makeSelectorFunction(selector);
-    return createQuery(() => filterDescendants(getVNode(), predicate)[0], () => [...getDebugInfo(), selector]);
+    return createQuery(
+      () => filterDescendants(getVNode(), predicate)[0],
+      () => [...getDebugInfo(), selector]
+    );
   };
   let queryAll = (selector: string | VNodePredicate) => {
     let predicate = makeSelectorFunction(selector);
-    return createCollectionQuery(() => filterDescendants(getVNode(), predicate), () => [...getDebugInfo(), selector]);
+    return createCollectionQuery(
+      () => filterDescendants(getVNode(), predicate),
+      () => [...getDebugInfo(), selector]
+    );
   };
   let getResult = () => {
     let result = getVNode();
     if (!result) {
-      throw new Error(`Query did not match a VNode: ${JSON.stringify(getDebugInfo(), undefined, 2)}`);
+      throw new Error(
+        `Query did not match a VNode: ${JSON.stringify(getDebugInfo(), undefined, 2)}`
+      );
     }
     return result;
   };
-  let targetDomNode: Object | undefined;
+  let targetDomNode: unknown | undefined;
   return {
     debug: () => JSON.stringify(getDebugInfo()),
     execute: getResult,
@@ -93,7 +102,7 @@ let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): No
     query,
     queryAll,
     get textContent(): string {
-      return collectTextContent(getResult(), []).join('');
+      return collectTextContent(getResult(), []).join("");
     },
     get vnodeSelector(): string {
       return getResult().vnodeSelector;
@@ -105,22 +114,27 @@ let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): No
       return getResult().children || [];
     },
     getChild: (index: number) => {
-      return createQuery(() => {
-        return getResult().children![index];
-      }, () => [...getDebugInfo(), `child:${index}`]);
+      return createQuery(
+        () => {
+          return getResult().children![index];
+        },
+        () => [...getDebugInfo(), `child:${index}`]
+      );
     },
     /**
      * A small facade that allows firing of simple events and sequences of events for common usecases.
      * It is not meant to be exhaustive.
      * If you need to simulate something that is not in here, you can simply invoke query(...).properties.on???() yourself.
      */
-    get simulate(): Simulator { return createSimulator(getResult(), targetDomNode); },
+    get simulate(): Simulator {
+      return createSimulator(getResult(), targetDomNode);
+    },
     setTargetDomNode: (target) => {
       targetDomNode = target;
     },
     getTargetDomNode: () => {
       return targetDomNode as any;
-    }
+    },
   };
 };
 
@@ -128,13 +142,16 @@ createCollectionQuery = (getVNodes: () => VNode[], getDebugInfo: () => any[]): N
   return {
     execute: getVNodes,
     getResult: (index) => {
-      return createQuery(() => {
-        return getVNodes()[index];
-      }, () => [...getDebugInfo(), `result:${index}`]);
+      return createQuery(
+        () => {
+          return getVNodes()[index];
+        },
+        () => [...getDebugInfo(), `result:${index}`]
+      );
     },
     get length() {
       return getVNodes().length;
-    }
+    },
   };
 };
 
@@ -148,14 +165,13 @@ export type NullableVNode = VNode | null | undefined;
 export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode): TestProjector => {
   let getRootVNode = () => {
     if (!renderMaquetteFunction) {
-      throw new Error('TestProjector is not initialized');
+      throw new Error("TestProjector is not initialized");
     }
     return renderMaquetteFunction();
   };
 
   let createQueryStart = createQuery(
-    () =>
-      ({ children: [getRootVNode()] } as any as VNode),
+    () => ({ children: [getRootVNode()] } as any as VNode),
     () => [getRootVNode()]
   );
 
@@ -168,6 +184,6 @@ export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode):
     },
     root: createQuery(getRootVNode, () => [getRootVNode()]),
     query: createQueryStart.query,
-    queryAll: createQueryStart.queryAll
+    queryAll: createQueryStart.queryAll,
   };
 };

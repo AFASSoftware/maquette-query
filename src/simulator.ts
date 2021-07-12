@@ -1,4 +1,4 @@
-import { VNode } from 'maquette';
+import { VNode } from "maquette";
 
 /**
  * Simulator to execute common user-interactions. Provides convenient wrappers for VNode.properties.on??? calls.
@@ -51,11 +51,16 @@ export interface Simulator {
   /**
    * Will invoke VNode.properties.onkeydown, VNode.properties.onkeyup, VNode.properties.onkeypress and VNode.properties.oninput
    */
-  keyPress(keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, targetElement?: any): void;
+  keyPress(
+    keyCodeOrChar: number | string,
+    valueBefore: string,
+    valueAfter: string,
+    targetElement?: any
+  ): void;
   /**
    * Will invoke VNode.properties.onmousewheel
    */
-  mouseWheel(deltas: { deltaX?: number, deltaY?: number }, targetElement?: any): Event;
+  mouseWheel(deltas: { deltaX?: number; deltaY?: number }, targetElement?: any): Event;
 }
 
 export interface MouseEventParameters {
@@ -78,7 +83,7 @@ let createEvent = (target: any): Event => {
       result.propagationStopped = true;
     },
     target,
-    currentTarget: target
+    currentTarget: target,
   };
   return <any>result;
 };
@@ -93,7 +98,9 @@ let createKeyEvent = (which: number, target: any): KeyboardEvent => {
 let createMouseEvent = (target: any, parameters?: MouseEventParameters): MouseEvent => {
   let event = <any>createEvent(target);
   if (parameters) {
-    Object.keys(parameters).forEach(param => { event[param] = parameters[param]; });
+    Object.keys(parameters).forEach((param) => {
+      event[param] = parameters[param];
+    });
   }
   return event;
 };
@@ -103,81 +110,86 @@ let createFocusEvent = (target: any): FocusEvent => {
 };
 
 let getKeyCode = (keyCodeOrChar: number | string) => {
-  return typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
+  return typeof keyCodeOrChar === "number" ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
 };
 
-export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simulator => {
+export let createSimulator = (vnode: VNode, defaultFakeDomNode?: unknown): Simulator => {
   let properties = vnode.properties!;
   return {
-    keyDown: (keyCode: number | string, fakeDomNode?: Object) => {
+    keyDown: (keyCode: number | string, fakeDomNode?: unknown) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
       properties.onkeydown!.call(properties.bind || properties, event);
       return event;
     },
 
-    keyUp: (keyCode: number | string, fakeDomNode?: Object) => {
+    keyUp: (keyCode: number | string, fakeDomNode?: unknown) => {
       let event = createKeyEvent(getKeyCode(keyCode), fakeDomNode || defaultFakeDomNode);
       properties.onkeyup!.call(properties.bind || properties, event);
       return event;
     },
 
-    mouseDown: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+    mouseDown: (fakeDomNode?: unknown, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmousedown!.call(properties.bind || properties, event);
       return event;
     },
 
-    mouseUp: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+    mouseUp: (fakeDomNode?: unknown, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmouseup!.call(properties.bind || properties, event);
       return event;
     },
 
-    mouseOver: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+    mouseOver: (fakeDomNode?: unknown, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmouseover!.call(properties.bind || properties, event);
       return event;
     },
 
-    mouseOut: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+    mouseOut: (fakeDomNode?: unknown, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onmouseout!.call(properties.bind || properties, event);
       return event;
     },
 
-    click: (fakeDomNode?: Object, parameters?: MouseEventParameters) => {
+    click: (fakeDomNode?: unknown, parameters?: MouseEventParameters) => {
       let event = createMouseEvent(fakeDomNode || defaultFakeDomNode, parameters);
       properties.onclick!.call(properties.bind || properties, event);
       return event;
     },
 
-    input: (fakeDomNode?: Object) => {
+    input: (fakeDomNode?: unknown) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
       properties.oninput!.call(properties.bind || properties, event);
       return event;
     },
 
-    change: (fakeDomNode?: Object) => {
+    change: (fakeDomNode?: unknown) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode);
       properties.onchange!.call(properties.bind || properties, event);
       return event;
     },
 
-    focus: (fakeDomNode?: Object) => {
+    focus: (fakeDomNode?: unknown) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
       properties.onfocus!.call(properties.bind || properties, event);
       return event;
     },
 
-    blur: (fakeDomNode?: Object) => {
+    blur: (fakeDomNode?: unknown) => {
       let event = createFocusEvent(fakeDomNode || defaultFakeDomNode);
       properties.onblur!.call(properties.bind || properties, event);
       return event;
     },
 
-    keyPress: (keyCodeOrChar: number | string, valueBefore: string, valueAfter: string, fakeDomNode?: Object) => {
+    keyPress: (
+      keyCodeOrChar: number | string,
+      valueBefore: string,
+      valueAfter: string,
+      fakeDomNode?: unknown
+    ) => {
       let target = (fakeDomNode || defaultFakeDomNode || {}) as { value: string };
-      let keyCode = typeof keyCodeOrChar === 'number' ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
+      let keyCode = typeof keyCodeOrChar === "number" ? keyCodeOrChar : keyCodeOrChar.charCodeAt(0);
       target.value = valueBefore;
       let keyDownEvent = createKeyEvent(keyCode, target);
       if (properties.onkeydown) {
@@ -196,13 +208,12 @@ export let createSimulator = (vnode: VNode, defaultFakeDomNode?: Object): Simula
       }
     },
 
-    mouseWheel: (deltas: { deltaX?: number, deltaY?: number }, fakeDomNode?: Object) => {
+    mouseWheel: (deltas: { deltaX?: number; deltaY?: number }, fakeDomNode?: unknown) => {
       let event = createEvent(fakeDomNode || defaultFakeDomNode) as any;
       event.deltaX = deltas.deltaX;
       event.deltaY = deltas.deltaY;
       properties.onmousewheel!.call(properties.bind || properties, event);
       return event;
-    }
-
+    },
   };
 };

@@ -1,2 +1,2 @@
-export { TestProjector, createTestProjector } from './test-projector';
-export { NodeQuery } from './query';
+export { TestProjector, createTestProjector } from "./test-projector";
+export { NodeQuery } from "./query";

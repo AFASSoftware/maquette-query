@@ -1,5 +1,6 @@
-import { VNode, VNodeProperties } from 'maquette';
-import { Simulator } from './simulator';
+import { VNode, VNodeProperties } from "maquette";
+
+import { Simulator } from "./simulator";
 
 // Interfaces
 // ----------
@@ -70,7 +71,7 @@ export interface NodeQuery extends QueryBase {
   /**
    * Registers an object to act as the target DOM node of events that are fired using `simulate`.
    */
-  setTargetDomNode(fakeDomNode?: Object): void;
+  setTargetDomNode(fakeDomNode?: unknown): void;
   /**
    * Gets the object registered using setTargetDomNode, as HTMLElement.
    */
