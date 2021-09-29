@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
+    "prepare": "husky install",
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
     "coverage-show": "open-cli build/coverage/index.html",
     "assist": "tsa",
@@ -77,26 +78,18 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "@types/sinon": "10.0.2",
+    "@types/sinon": "10.0.4",
     "@types/sinon-chai": "3.2.5",
-    "maquette": "3.5.0",
-    "open-cli": "7.0.0",
-    "sinon": "11.1.1",
+    "maquette": "3.5.1",
+    "open-cli": "7.0.1",
+    "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
-    "typescript-assistant": "^0.51.0"
+    "typescript-assistant": "0.53.0"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {
       "style": "module",
       "parser": "typescript"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "post-checkout": "tsa post-checkout || exit 0",
-      "post-merge": "tsa post-merge || exit 0",
-      "pre-commit": "tsa pre-commit",
-      "pre-push": "npm run dist && tsa pre-push"
     }
   }
 }
