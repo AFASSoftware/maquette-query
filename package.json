@@ -78,13 +78,13 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "@types/sinon": "10.0.4",
-    "@types/sinon-chai": "3.2.5",
-    "maquette": "3.5.1",
+    "@types/sinon": "10.0.11",
+    "@types/sinon-chai": "3.2.8",
+    "maquette": "3.5.2",
     "open-cli": "7.0.1",
-    "sinon": "11.1.2",
+    "sinon": "13.0.1",
     "sinon-chai": "3.7.0",
-    "typescript-assistant": "0.53.0"
+    "typescript-assistant": "0.55.8"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {
