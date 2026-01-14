@@ -45,7 +45,7 @@
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
     "@types/node": "^22.10.5",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^4.0.17",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
@@ -54,7 +54,7 @@
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^2.1.8"
+    "vitest": "^4.0.17"
   },
   "peerDependencies": {
     "maquette": "^3.0.0 || ^4.0.0"
