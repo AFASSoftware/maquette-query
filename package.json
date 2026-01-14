@@ -44,17 +44,17 @@
   },
   "homepage": "https://github.com/AFASSoftware/maquette-query#readme",
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "@vitest/coverage-v8": "^2.1.8",
-    "eslint": "^9.18.0",
-    "eslint-config-prettier": "^10.0.1",
+    "@types/node": "^25.0.8",
+    "@vitest/coverage-v8": "^4.0.17",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "maquette": "^4.1.3",
-    "prettier": "^3.4.2",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0",
-    "vitest": "^2.1.8"
+    "prettier": "^3.7.4",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.0",
+    "vitest": "^4.0.17"
   },
   "peerDependencies": {
     "maquette": "^3.0.0 || ^4.0.0"

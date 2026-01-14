@@ -108,12 +108,25 @@ describe("query", () => {
       let vnode = h("div", [h("span.test")]);
       expect(createQuery(vnode).query(".nonexistent").exists()).toBe(false);
     });
+
+    it("returns false when querying from non-existent parent", () => {
+      let vnode = h("div", [h("span.test")]);
+      // First query returns undefined, then querying from that should also return false
+      expect(createQuery(vnode).query(".nonexistent").query(".child").exists()).toBe(false);
+    });
   });
 
   describe("debug", () => {
     it("returns debug information as JSON string", () => {
       let vnode = h("div", [h("span.test")]);
       let debugInfo = createQuery(vnode).query(".test").debug();
+      expect(debugInfo).toContain(".test");
+    });
+
+    it("returns debug info from projector query", () => {
+      let vnode = h("div", [h("span.test")]);
+      let projector = createTestProjector(() => vnode);
+      let debugInfo = projector.query(".test").debug();
       expect(debugInfo).toContain(".test");
     });
   });
@@ -129,7 +142,7 @@ describe("query", () => {
       let query = createQuery(vnode);
       let target = { id: "fake-dom-node" };
       query.setTargetDomNode(target);
-      expect(createQuery(vnode).getTargetDomNode()).toBeUndefined(); // Different instance
+      expect(query.getTargetDomNode()).toBe(target);
     });
   });
 
@@ -152,6 +165,13 @@ describe("query", () => {
       let vnode = h("div", [h("span", [h("p.nested")])]);
       let childQuery = createQuery(vnode).getChild(0);
       expect(childQuery.query(".nested").vnodeSelector).toBe("p.nested");
+    });
+
+    it("provides debug info for getChild results", () => {
+      let vnode = h("div", [h("span.first"), h("span.second")]);
+      let childQuery = createQuery(vnode).getChild(0);
+      let debugInfo = childQuery.debug();
+      expect(debugInfo).toContain("child:0");
     });
   });
 
