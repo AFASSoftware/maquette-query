@@ -1,12 +1,12 @@
 {
-    "version": "2.0.0",
-    "command": "gulp",
-    "tasks": [
-        {
-            "label": "gulp",
-            "type": "gulp",
-            "problemMatcher": [],
-            "group": "build"
-        }
-    ]
+  "version": "2.0.0",
+  "command": "gulp",
+  "tasks": [
+    {
+      "label": "gulp",
+      "type": "gulp",
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
 }

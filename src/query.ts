@@ -1,6 +1,6 @@
 import { VNode, VNodeProperties } from "maquette";
 
-import { Simulator } from "./simulator";
+import { Simulator } from "./simulator.js";
 
 // Interfaces
 // ----------

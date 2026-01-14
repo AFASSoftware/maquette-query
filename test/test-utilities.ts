@@ -1,10 +1,4 @@
-/* tslint:disable:no-require-imports no-unused-variable */
-import chai = require("chai");
+import { vi } from "vitest";
 
-import * as sinon from "sinon";
-import sinonChai = require("sinon-chai");
-chai.use(sinonChai);
-
-let expect = chai.expect;
-
-export { chai, expect, sinon };
+export { beforeEach, describe, expect, it } from "vitest";
+export { vi as sinon };

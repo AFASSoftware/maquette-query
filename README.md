@@ -1,4 +1,5 @@
 # maquette-query
+
 Query utility for maquette's virtual DOM
 
 First of all, querying a virtual DOM makes no sense in production code.

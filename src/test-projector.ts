@@ -1,7 +1,7 @@
 import { VNode, VNodeProperties } from "maquette";
 
-import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from "./query";
-import { Simulator, createSimulator } from "./simulator";
+import { NodeListQuery, NodeQuery, QueryBase, VNodePredicate } from "./query.js";
+import { Simulator, createSimulator } from "./simulator.js";
 
 /**
  * see `createTestProjector`
@@ -94,7 +94,7 @@ let createQuery = (getVNode: () => NullableVNode, getDebugInfo: () => any[]): No
     }
     return result;
   };
-  let targetDomNode: unknown | undefined;
+  let targetDomNode: unknown;
   return {
     debug: () => JSON.stringify(getDebugInfo()),
     execute: getResult,
@@ -171,7 +171,7 @@ export let createTestProjector = (renderMaquetteFunction?: () => NullableVNode):
   };
 
   let createQueryStart = createQuery(
-    () => ({ children: [getRootVNode()] } as any as VNode),
+    () => ({ children: [getRootVNode()] }) as any as VNode,
     () => [getRootVNode()]
   );
 

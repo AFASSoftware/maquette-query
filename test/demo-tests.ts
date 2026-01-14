@@ -1,7 +1,7 @@
 import { Component, h } from "maquette";
+import { beforeEach, describe, expect, it } from "vitest";
 
-import { createTestProjector } from "../src/test-projector";
-import { expect } from "./test-utilities";
+import { createTestProjector } from "../src/test-projector.js";
 
 // The hello world application
 let createHelloWorldApp = () => {
@@ -42,19 +42,19 @@ describe("hello world app", () => {
   });
 
   it('outputs "hello you!" when no name has been entered', () => {
-    expect(output.textContent).to.equal("Hello you!");
+    expect(output.textContent).toBe("Hello you!");
   });
 
   it("outputs the value currently being typed", () => {
     input.simulate.keyPress("J", "", "J");
-    expect(output.textContent).to.equal("Hello J!");
+    expect(output.textContent).toBe("Hello J!");
     input.simulate.keyPress("O", "J", "Jo");
-    expect(output.textContent).to.equal("Hello Jo!");
-    expect(inputElement.value).to.equal("Jo");
+    expect(output.textContent).toBe("Hello Jo!");
+    expect(inputElement.value).toBe("Jo");
   });
 
   it("greets the user by the name he has entered in one input event (using drag and drop for example)", () => {
     input.simulate.input({ value: "Johan" });
-    expect(output.textContent).to.equal("Hello Johan!");
+    expect(output.textContent).toBe("Hello Johan!");
   });
 });
